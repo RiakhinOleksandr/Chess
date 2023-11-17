@@ -1,8 +1,10 @@
 package com.chess.Chess;
 
+import java.util.ArrayList;
+
 public class Figure {
     private int row, column;
-    private boolean is_white;
+    private boolean is_white, not_moved;
     private String name;
 
     public int[] return_coordinates() {
@@ -22,6 +24,14 @@ public class Figure {
         this.name = name;
     }
 
+    public void set_not_moved(boolean not_moved) {
+        this.not_moved = not_moved;
+    }
+
+    public boolean not_moved() {
+        return this.not_moved;
+    }
+
     public boolean is_white() {
         return this.is_white;
     }
@@ -30,10 +40,15 @@ public class Figure {
         this.is_white = is_white;
     }
 
+    public boolean check_if_move_possible(Figure[][] curr_position, int new_row, int new_column) {
+        return false;
+    }
+
     public void move(Figure[][] curr_position, int new_row, int new_column) {
     }
 
-    public void get_possible_moves(Figure[][] curr_position) {
+    public ArrayList<int[]> get_possible_moves(Figure[][] curr_position) {
+        return new ArrayList<int[]>();
     }
 }
 
