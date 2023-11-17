@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="eu" xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" href="style.css">
     <title>Display Array</title>
@@ -8,7 +8,12 @@
 <div class="MainPage">
     <table>
         <tr th:each="row: ${board}">
-            <td th:each="value: ${row}" th:text="${value}" />
+            <td th:each="value: ${row}">
+                <button th:if="${not #strings.isEmpty(value)}">
+                    <img th:src="@{${'/img/' + value.get_name() +'_'+ value.is_white() + '.png'}}" width="120" th:alt="${value.get_name()}"/>
+                </button>
+
+            </td>
         </tr>
     </table>
 </div>

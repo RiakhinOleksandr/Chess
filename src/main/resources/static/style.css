@@ -67,3 +67,21 @@ tr:nth-child(odd) td:nth-child(odd){
     background-color: black;
     color: #fff;
 }
+tr:nth-child(even) td:nth-child(even)button{
+    color: #fff;
+}
+tr:nth-child(odd) td:nth-child(odd) button{
+    color: #fff;
+}
+td button{
+    border: none;
+    background-color: transparent;
+}
+td button:hover{
+    cursor: pointer;
+}
+td button img{
+    height: 70px;
+    width: 70px;
+    object-fit: contain;
+}
