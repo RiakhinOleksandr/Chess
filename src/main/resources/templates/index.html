@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>Display Array</title>
+</head>
+<body>
+<div class="MainPage">
+    <table>
+        <tr th:each="row: ${board}">
+            <td th:each="value: ${row}" th:text="${value}" />
+        </tr>
+    </table>
+</div>
+</body>
+</html>
