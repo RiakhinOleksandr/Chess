@@ -33,59 +33,25 @@ public class Rook extends Figure {
                 } else {
                     if (new_column > column) { // If rook moves right
                         for (int i = column + 1; i < new_column; i++) {
-                            if (curr_position[row][i] == null) {
-                                curr_position[row][i] = curr_position[row][i - 1];
-                                curr_position[row][i - 1] = null;
-                            } else {
-                                if (i != column + 1) {
-                                    curr_position[row][column] = curr_position[row][i - 1];
-                                    curr_position[row][i - 1] = null;
-                                }
+                            if (curr_position[row][i] != null) {
                                 throw new ImpossibleMove();
                             }
                         }
                         if (curr_position[row][new_column] != null) {
-                            if (colour != curr_position[row][new_column].is_white()) {
-                                curr_position[row][column] = curr_position[row][new_column - 1];
-                                curr_position[row][new_column - 1] = null;
-                            } else {
-                                if (new_column - 1 != column) {
-                                    curr_position[row][column] = curr_position[row][new_column - 1];
-                                    curr_position[row][new_column - 1] = null;
-                                }
+                            if (colour == curr_position[row][new_column].is_white()) {
                                 throw new ImpossibleMove();
                             }
-                        } else {
-                            curr_position[row][column] = curr_position[row][new_column - 1];
-                            curr_position[row][new_column - 1] = null;
                         }
                     } else { // If rook moves left
                         for (int i = column - 1; i > new_column; i--) {
-                            if (curr_position[row][i] == null) {
-                                curr_position[row][i] = curr_position[row][i + 1];
-                                curr_position[row][i + 1] = null;
-                            } else {
-                                if (i != column - 1) {
-                                    curr_position[row][column] = curr_position[row][i + 1];
-                                    curr_position[row][i + 1] = null;
-                                }
+                            if (curr_position[row][i] != null) {
                                 throw new ImpossibleMove();
                             }
                         }
                         if (curr_position[row][new_column] != null) {
-                            if (colour != curr_position[row][new_column].is_white()) {
-                                curr_position[row][column] = curr_position[row][new_column + 1];
-                                curr_position[row][new_column + 1] = null;
-                            } else {
-                                if (new_column + 1 != column) {
-                                    curr_position[row][column] = curr_position[row][new_column + 1];
-                                    curr_position[row][new_column + 1] = null;
-                                }
+                            if (colour == curr_position[row][new_column].is_white()) {
                                 throw new ImpossibleMove();
                             }
-                        } else {
-                            curr_position[row][column] = curr_position[row][new_column + 1];
-                            curr_position[row][new_column + 1] = null;
                         }
                     }
                 }
@@ -95,59 +61,25 @@ public class Rook extends Figure {
                 } else {
                     if (new_row > row) { // If rook moves down
                         for (int i = row + 1; i < new_row; i++) {
-                            if (curr_position[i][column] == null) {
-                                curr_position[i][column] = curr_position[i - 1][column];
-                                curr_position[i - 1][column] = null;
-                            } else {
-                                if (i != row + 1) {
-                                    curr_position[row][column] = curr_position[i - 1][column];
-                                    curr_position[i - 1][column] = null;
-                                }
+                            if (curr_position[i][column] != null) {
                                 throw new ImpossibleMove();
                             }
                         }
                         if (curr_position[new_row][new_column] != null) {
-                            if (colour != curr_position[new_row][new_column].is_white()) {
-                                curr_position[row][new_column] = curr_position[new_row - 1][new_column];
-                                curr_position[new_row - 1][new_column] = null;
-                            } else {
-                                if (new_row - 1 != row) {
-                                    curr_position[row][column] = curr_position[new_row - 1][new_column];
-                                    curr_position[new_row - 1][new_column] = null;
-                                }
+                            if (colour == curr_position[new_row][new_column].is_white()) {
                                 throw new ImpossibleMove();
                             }
-                        } else {
-                            curr_position[row][new_column] = curr_position[new_row - 1][new_column];
-                            curr_position[new_row - 1][new_column] = null;
                         }
                     } else { // If rook moves up
                         for (int i = row - 1; i > new_row; i--) {
-                            if (curr_position[i][column] == null) {
-                                curr_position[i][column] = curr_position[i + 1][column];
-                                curr_position[i + 1][column] = null;
-                            } else {
-                                if (i != row - 1) {
-                                    curr_position[row][column] = curr_position[i + 1][column];
-                                    curr_position[i + 1][column] = null;
-                                }
+                            if (curr_position[i][column] != null) {
                                 throw new ImpossibleMove();
                             }
                         }
                         if (curr_position[new_row][new_column] != null) {
-                            if (colour != curr_position[new_row][new_column].is_white()) {
-                                curr_position[row][new_column] = curr_position[new_row + 1][new_column];
-                                curr_position[new_row + 1][new_column] = null;
-                            } else {
-                                if (new_row + 1 != row) {
-                                    curr_position[row][column] = curr_position[new_row + 1][new_column];
-                                    curr_position[new_row + 1][new_column] = null;
-                                }
+                            if (colour == curr_position[new_row][new_column].is_white()) {
                                 throw new ImpossibleMove();
                             }
-                        } else {
-                            curr_position[row][new_column] = curr_position[new_row + 1][new_column];
-                            curr_position[new_row + 1][new_column] = null;
                         }
                     }
                 }
