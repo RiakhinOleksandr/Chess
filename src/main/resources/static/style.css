@@ -58,19 +58,20 @@ td{
     vertical-align: middle;
     text-align: center;
     font-size: 24px;
+    position: relative;
 }
-tr:nth-child(even) td:nth-child(even){
-    background-color: black;
+tbody tr:nth-child(even) td:nth-child(even):not(:last-child){
+    background-color: #797979;
     color: #fff;
 }
-tr:nth-child(odd) td:nth-child(odd){
-    background-color: black;
+tbody tr:nth-child(odd) td:nth-child(2n+3){
+    background-color: #797979;
     color: #fff;
 }
-tr:nth-child(even) td:nth-child(even)button{
+tbody tr:nth-child(even) td:nth-child(even)button{
     color: #fff;
 }
-tr:nth-child(odd) td:nth-child(odd) button{
+tbody tr:nth-child(odd) td:nth-child(2n+3) button{
     color: #fff;
 }
 td button{
@@ -80,8 +81,31 @@ td button{
 td button:hover{
     cursor: pointer;
 }
-td button img{
+.Figure img{
     height: 70px;
     width: 70px;
     object-fit: contain;
+}
+.TableSides{
+    width: auto;
+    background-color: #e8e8e8;
+    padding: 0 5px 0 5px;
+}
+tfoot td, thead td{
+    height: auto;
+    width: auto;
+    background-color: #e8e8e8;
+}
+.MoveCircle{
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 0 auto;
+}
+.MoveCircle img{
+    top: 0;
+    left: 0;
+    margin: 5px 0 0 0;
+    height: 80px;
+    width: 80px;
 }
