@@ -33,21 +33,21 @@ public class KingTest {
 
   @Test
   public void check_castle_move() {
-    position[0][4] = new King(0, 4, false, true);
+    position[0][3] = new King(0, 3, false, true);
     position[0][0] = new Rook(0, 0, false, true);
 
-    position[0][4].move(position, 0, 2);
-    Assertions.assertEquals("King", position[0][2].get_name());
-    Assertions.assertEquals("Rook", position[0][3].get_name());
+    position[0][3].move(position, 0, 1);
+    Assertions.assertEquals("King", position[0][1].get_name());
+    Assertions.assertEquals("Rook", position[0][2].get_name());
     Assertions.assertEquals(null, position[0][0]);
 
-    position[7][4] = new King(7, 4, true, true);
+    position[7][3] = new King(7, 3, true, true);
     position[7][7] = new Rook(7, 7, true, true);
 
-    position[7][4].move(position, 7, 6);
-    Assertions.assertEquals("King", position[7][6].get_name());
-    Assertions.assertEquals("Rook", position[7][5].get_name());
-    Assertions.assertEquals(null, position[7][4]);
+    position[7][3].move(position, 7, 5);
+    Assertions.assertEquals("King", position[7][5].get_name());
+    Assertions.assertEquals("Rook", position[7][4].get_name());
+    Assertions.assertEquals(null, position[7][3]);
   }
 
   @Test
@@ -60,13 +60,12 @@ public class KingTest {
     Assertions.assertEquals(true, position[4][4].is_white());
     Assertions.assertEquals(null, position[4][3]);
 
-    position[0][4] = new King(0, 4, true, true);
-    position[0][0] = new Rook(0, 0, true, true);
-    position[0][3] = new King(0, 3, false, false);
+    position[0][3] = new King(0, 3, true, true);
+    position[0][7] = new Rook(0, 7, true, true);
+    position[0][4] = new King(0, 4, false, false);
 
-    position[0][4].move(position, 0, 2);
-    Assertions.assertEquals("King", position[0][4].get_name());
-    Assertions.assertEquals("Rook", position[0][0].get_name());
+    position[0][3].move(position, 0, 5);
+    Assertions.assertEquals(null, position[0][5]);
 
   }
 
@@ -75,20 +74,20 @@ public class KingTest {
     ArrayList<int[]> possible_moves;
     int[][] expected;
 
-    position[7][4] = new King(7, 4, true, true);
-    position[7][7] = new Rook(7, 7, true, true);
+    position[7][3] = new King(7, 3, true, true);
+    position[7][0] = new Rook(7, 0, true, true);
 
-    possible_moves = position[7][4].get_possible_moves(position);
-    expected = new int[][] { { 6, 3 }, { 6, 4 }, { 6, 5 }, { 7, 3 }, { 7, 5 }, { 7, 6 } };
+    possible_moves = position[7][3].get_possible_moves(position);
+    expected = new int[][] { { 6, 2 }, { 6, 3 }, { 6, 4 }, { 7, 2 }, { 7, 4 }, { 7, 1 } };
     for (int i = 0; i < expected.length; i++) {
       Assertions.assertArrayEquals(expected[i], possible_moves.get(i));
     }
 
-    position[0][4] = new King(0, 4, true, true);
-    position[0][0] = new Rook(0, 0, true, true);
+    position[0][3] = new King(0, 3, true, true);
+    position[0][7] = new Rook(0, 7, true, true);
 
-    possible_moves = position[0][4].get_possible_moves(position);
-    expected = new int[][] { { 0, 3 }, { 0, 5 }, { 1, 3 }, { 1, 4 }, { 1, 5 }, { 0, 2 } };
+    possible_moves = position[0][3].get_possible_moves(position);
+    expected = new int[][] { { 0, 2 }, { 0, 4 }, { 1, 2 }, { 1, 3 }, { 1, 4 }, { 0, 5 } };
     for (int i = 0; i < expected.length; i++) {
       Assertions.assertArrayEquals(expected[i], possible_moves.get(i));
     }
