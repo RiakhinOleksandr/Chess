@@ -2,11 +2,11 @@ package com.chess.Chess;
 
 import java.util.ArrayList;
 
-public class Bishop extends Figure {
-    public Bishop(int row, int column, boolean isWhite) {
+public class Queen extends Figure {
+    public Queen(int row, int column, boolean isWhite) {
         this.set_coordinates(row, column);
         this.set_is_white(isWhite);
-        this.set_name("Bishop");
+        this.set_name("Queen");
         this.set_not_moved(true);
     }
 
@@ -26,6 +26,36 @@ public class Bishop extends Figure {
         return currPosition[newRow][newCol] == null || color != currPosition[newRow][newCol].is_white();
     }
 
+    private boolean checkHorizontalMove(Figure[][] currPosition, int newCol) {
+        int currRow = this.return_coordinates()[0];
+        int currCol = this.return_coordinates()[1];
+        boolean color = this.is_white();
+
+        int direction = Integer.compare(newCol, currCol); // Equals 1 when piece moves right, -1 when left, used as a multiplier
+
+        for (int i = 1; i < Math.abs(newCol - currCol); i++) {
+            if (currPosition[currRow][currCol + i*direction] != null) {
+                return false;
+            }
+        }
+        return currPosition[currRow][newCol] == null || color != currPosition[currRow][newCol].is_white();
+    }
+
+    private boolean checkVerticalMove(Figure[][] currPosition, int newRow) {
+        int currRow = this.return_coordinates()[0];
+        int currCol = this.return_coordinates()[1];
+        boolean color = this.is_white();
+
+        int direction = Integer.compare(newRow, currRow); // Equals 1 when piece moves up, -1 when down, used as a multiplier
+
+        for (int i = 1; i < Math.abs(newRow - currRow); i++) {
+            if (currPosition[currRow + i*direction][currCol] != null) {
+                return false;
+            }
+        }
+        return currPosition[newRow][currCol] == null || color != currPosition[newRow][currCol].is_white();
+    }
+
     @Override
     public boolean check_if_move_possible(Figure[][] currPosition, int newRow, int newCol) {
         int currRow = this.return_coordinates()[0];
@@ -34,8 +64,13 @@ public class Bishop extends Figure {
         if (newRow > 7 | newRow < 0 | newCol > 7 | newCol < 0) {
             return false;
         }
-
-        if (Math.abs(newRow - currRow) != Math.abs(newCol - currCol)) { // Any but diagonal moves
+        if (newRow == currRow) {
+            return checkHorizontalMove(currPosition, newCol);
+        }
+        if (newCol == currCol) {
+            return checkVerticalMove(currPosition, newRow);
+        }
+        if (Math.abs(newRow - currRow) != Math.abs(newCol - currCol)) { // Any but diagonal moves(vertical and horizontal are already checked)
             return false;
         }
         return checkDiagonalMove(currPosition, newRow, newCol);
