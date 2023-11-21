@@ -59,4 +59,10 @@ public class BishopTest {
             Assertions.assertArrayEquals(expected[i], possibleMoves.get(i));
         }
     }
+
+    @Test
+    void outOfBoardMoveTest() {
+        position[0][2].move(position, 7, 9);
+        Assertions.assertEquals("Bishop", position[0][2].get_name());
+    }
 }

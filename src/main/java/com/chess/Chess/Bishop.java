@@ -31,6 +31,10 @@ public class Bishop extends Figure {
         int currRow = this.return_coordinates()[0];
         int currCol = this.return_coordinates()[1];
 
+        if (newRow > 7 | newRow < 0 | newCol > 7 | newCol < 0) {
+            return false;
+        }
+
         if (Math.abs(newRow - currRow) != Math.abs(newCol - currCol)) { // Any but diagonal moves
             return false;
         }
