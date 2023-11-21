@@ -7,15 +7,52 @@
 <body>
 <div class="MainPage">
     <table>
-        <tr th:each="row: ${board}">
-            <td th:each="value: ${row}">
-                <button th:if="${not #strings.isEmpty(value)}">
-                    <img th:src="@{${'/img/' + value.get_name() +'_'+ value.is_white() + '.png'}}" width="120" th:alt="${value.get_name()}"/>
-                </button>
-
-            </td>
+        <thead>
+        <tr>
+            <td></td>
+            <td>a</td>
+            <td>b</td>
+            <td>c</td>
+            <td>d</td>
+            <td>e</td>
+            <td>f</td>
+            <td>g</td>
+            <td>h</td>
+            <td></td>
         </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row, i: ${board}">
+            <td th:text="${i.index + 1}" class="TableSides"></td>
+            <td th:each="value, j: ${row}" th:id="${'b' + i.index + '_' + j.index}">
+                <button class="Figure" th:if="${not #strings.isEmpty(value)}" th:id="${i.index + '_' + j.index}" onClick="send(this.id)">
+                    <img th:src="@{${'/img/' + value.get_name() +'_'+ value.is_white() + '.png'}}" th:alt="${value.get_name()}"/>
+                </button>
+            </td>
+            <td th:text="${i.index + 1}" class="TableSides"></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <td>a</td>
+            <td>b</td>
+            <td>c</td>
+            <td>d</td>
+            <td>e</td>
+            <td>f</td>
+            <td>g</td>
+            <td>h</td>
+            <td></td>
+        </tr>
+        </tfoot>
     </table>
 </div>
+<button class="MoveCircle">
+    <img src="/img/circle.png" alt="circle"/>
+</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/main.js"></script>
 </body>
 </html>
