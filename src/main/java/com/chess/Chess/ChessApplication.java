@@ -14,15 +14,10 @@ public class ChessApplication {
 		SpringApplication.run(ChessApplication.class, args);
 	}
 
-
 	@GetMapping("/")
 	public String index(Model model) {
-		// Коли добавляєте фіури то змініть назви фігур в дерикторії
-		// src/main/resources/static/img на
-		// name_true - біла name_false - чорна
-
-		//Дошка находиться в Board.java
-		//Те що знизу просто щоб відмалювати дошку
+		// Дошка находиться в Board.java
+		// Те що знизу просто щоб відмалювати дошку
 		Figure[][] position = new Figure[8][8];
 
 		model.addAttribute("board", position);
