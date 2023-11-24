@@ -11,6 +11,8 @@ public class RookTest {
     @BeforeEach
     public void setUp() {
         position = new Figure[8][8];
+        position[0][0] = new King(0, 0, true, false);
+        position[0][6] = new King(0, 6, false, false);
     }
 
     @Test
@@ -59,7 +61,7 @@ public class RookTest {
         position[2][2] = new Rook(2, 2, true, false);
         position[2][4] = new Rook(2, 4, true, false);
         ArrayList<int[]> possible_moves = position[0][2].get_possible_moves(position);
-        int[][] expected = new int[][] { { 1, 2 }, { 0, 0 }, { 0, 1 } };
+        int[][] expected = new int[][] { { 1, 2 }, { 0, 1 } };
         for (int i = 0; i < expected.length; i++) {
             Assertions.assertArrayEquals(possible_moves.get(i), expected[i]);
         }

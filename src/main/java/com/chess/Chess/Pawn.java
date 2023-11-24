@@ -1,6 +1,7 @@
 package com.chess.Chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Pawn extends Figure {
@@ -128,7 +129,8 @@ public class Pawn extends Figure {
         }
         if (curr_position[row][new_column] != null) {
             if (Objects.equals(curr_position[row][new_column].getClass().getName(), "com.chess.Chess.Pawn")) {
-                if (!(((Pawn) curr_position[row][new_column]).en_passant()) | colour == curr_position[row][new_column].is_white()) {
+                if (!(((Pawn) curr_position[row][new_column]).en_passant())
+                        | colour == curr_position[row][new_column].is_white()) {
                     return false;
                 }
             } else {
@@ -141,8 +143,44 @@ public class Pawn extends Figure {
     }
 
     @Override
-    public void move(Figure[][] curr_position, int new_row, int new_column) {
+    public boolean move_is_possible(Figure[][] curr_position, int new_row, int new_column) {
+        int row = this.return_coordinates()[0];
+        int column = this.return_coordinates()[1];
+        boolean colour = this.is_white();
         if (this.check_if_move_possible(curr_position, new_row, new_column)) {
+            Figure[][] position_after_move = new Figure[8][8];
+            for (int i = 0; i < 8; i++) {
+                position_after_move[i] = Arrays.copyOf(curr_position[i], 8);
+            }
+            if (new_row == 0 | new_row == 7) {
+                ((Pawn) position_after_move[row][column]).promote(position_after_move, new_row, new_column, "Queen");
+            } else {
+                if (this.check_for_en_passant(position_after_move, new_row, new_column)) {
+                    position_after_move[row][new_column] = null;
+                } else if (new_row - row == 2 | new_row - row == -2) {
+                    ((Pawn) position_after_move[row][column]).set_en_passant(true);
+                }
+                position_after_move[new_row][new_column] = new Pawn(new_row, new_column, colour, false);
+                position_after_move[row][column] = null;
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        if (position_after_move[i][j] != null) {
+                            if (Objects.equals(position_after_move[i][j].get_name(), "King")) {
+                                if (colour == position_after_move[i][j].is_white()) {
+                                    return (!((King) position_after_move[i][j]).check(position_after_move));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void move(Figure[][] curr_position, int new_row, int new_column) {
+        if (this.move_is_possible(curr_position, new_row, new_column)) {
             int row = this.return_coordinates()[0];
             int column = this.return_coordinates()[1];
             if (new_row == 0 | new_row == 7) {
@@ -196,7 +234,7 @@ public class Pawn extends Figure {
         int[][] potential_moves = { { row + 1, column }, { row + 2, column }, { row - 1, column }, { row - 2, column },
                 { row + 1, column + 1 }, { row + 1, column - 1 }, { row - 1, column + 1 }, { row - 1, column - 1 } };
         for (int[] coords : potential_moves) {
-            if (this.check_if_move_possible(curr_position, coords[0], coords[1])) {
+            if (this.move_is_possible(curr_position, coords[0], coords[1])) {
                 possible_moves.add(new int[] { coords[0], coords[1] });
             }
         }

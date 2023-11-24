@@ -1,6 +1,7 @@
 package com.chess.Chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class King extends Figure {
 
@@ -51,6 +52,50 @@ public class King extends Figure {
     }
   }
 
+  public boolean check(Figure[][] curr_position) {
+    int row = this.return_coordinates()[0];
+    int column = this.return_coordinates()[1];
+    boolean colour = this.is_white();
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        if (curr_position[i][j] != null) {
+          if (curr_position[i][j].is_white() != colour) {
+            if (curr_position[i][j].check_if_move_possible(curr_position, row, column)) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public boolean move_is_possible(Figure[][] curr_position, int new_row, int new_column) {
+    int row = this.return_coordinates()[0];
+    int column = this.return_coordinates()[1];
+    boolean colour = this.is_white();
+    if (this.check_if_move_possible(curr_position, new_row, new_column)) {
+      Figure[][] position_after_move = new Figure[8][8];
+      for (int i = 0; i < 8; i++) {
+        position_after_move[i] = Arrays.copyOf(curr_position[i], 8);
+      }
+      if (can_castle(position_after_move, new_row, new_column)) {
+        if (new_column == 1) { // short castling
+          position_after_move[new_row][2] = new Rook(new_row, 2, colour, false);
+          position_after_move[new_row][0] = null;
+        } else { // long castling
+          position_after_move[new_row][4] = new Rook(new_row, 4, colour, false);
+          position_after_move[new_row][7] = null;
+        }
+      }
+      position_after_move[new_row][new_column] = new King(new_row, new_column, colour, false);
+      position_after_move[row][column] = null;
+      return (!((King) position_after_move[new_row][new_column]).check(position_after_move));
+    }
+    return false;
+  }
+
   public boolean can_castle(Figure[][] curr_position, int new_row, int new_column) {
     int row = this.return_coordinates()[0];
 
@@ -85,7 +130,7 @@ public class King extends Figure {
 
   @Override
   public void move(Figure[][] curr_position, int new_row, int new_column) {
-    if (this.check_if_move_possible(curr_position, new_row, new_column)) {
+    if (this.move_is_possible(curr_position, new_row, new_column)) {
 
       if (can_castle(curr_position, new_row, new_column)) {
         if (new_column == 1) { // short castling
@@ -139,7 +184,7 @@ public class King extends Figure {
 
     for (int i = row - 1; i < row + 2; i++) {
       for (int j = column - 1; j < column + 2; j++) {
-        if (this.check_if_move_possible(curr_position, i, j)) {
+        if (this.move_is_possible(curr_position, i, j)) {
           possible_moves.add(new int[] { i, j });
         }
       }

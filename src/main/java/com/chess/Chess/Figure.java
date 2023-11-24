@@ -44,6 +44,10 @@ public class Figure {
         return false;
     }
 
+    public boolean move_is_possible(Figure[][] curr_position, int new_row, int new_column) {
+        return false;
+    }
+
     public void move(Figure[][] curr_position, int new_row, int new_column) {
     }
 

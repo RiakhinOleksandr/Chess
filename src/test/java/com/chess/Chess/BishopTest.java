@@ -13,6 +13,7 @@ public class BishopTest {
     void setUp() {
         position = new Figure[8][8];
         position[0][2] = new Bishop(0, 2, true);
+        position[0][0] = new King(0, 0, true, false);
     }
 
     @Test
@@ -34,7 +35,7 @@ public class BishopTest {
     @Test
     void takeEnemyPieceTest() {
         position[5][7] = new Bishop(5, 7, false);
-        position[0][2].move(position, 5,7);
+        position[0][2].move(position, 5, 7);
         Assertions.assertTrue(position[5][7].is_white());
         Assertions.assertNull(position[0][2]);
     }
