@@ -17,6 +17,8 @@ public class KnightTest {
   @Test
   public void check_if_move_possible() {
     boolean actual;
+    position[0][0] = new King(0, 0, true, false);
+    position[7][7] = new King(7, 7, false, false);
     position[4][3] = new Knight(4, 3, true, false);
     position[3][5] = new Knight(3, 5, true, false);
     position[5][5] = new Knight(5, 5, false, false);
@@ -37,6 +39,8 @@ public class KnightTest {
 
   @Test
   public void check_move() {
+    position[0][0] = new King(0, 0, true, false);
+    position[7][7] = new King(7, 7, false, false);
     position[4][3] = new Knight(4, 3, true, false);
     position[3][5] = new Knight(3, 5, true, false);
     position[5][5] = new Knight(5, 5, false, false);
@@ -57,6 +61,8 @@ public class KnightTest {
     ArrayList<int[]> possible_moves;
     int[][] expected;
 
+    position[0][0] = new King(0, 0, true, false);
+    position[7][7] = new King(7, 7, false, false);
     position[4][3] = new Knight(4, 3, true, false);
     position[0][7] = new Knight(0, 7, true, false);
 

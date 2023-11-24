@@ -12,6 +12,8 @@ public class PawnTest {
     @BeforeEach
     public void setUp() {
         position = new Figure[8][8];
+        position[0][0] = new King(0, 0, true, false);
+        position[7][7] = new King(7, 7, false, false);
     }
 
     @Test

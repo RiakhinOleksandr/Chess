@@ -1,6 +1,8 @@
 package com.chess.Chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Rook extends Figure {
     public Rook(int row, int column, boolean is_white, boolean not_moved) {
@@ -93,8 +95,35 @@ public class Rook extends Figure {
     }
 
     @Override
-    public void move(Figure[][] curr_position, int new_row, int new_column) {
+    public boolean move_is_possible(Figure[][] curr_position, int new_row, int new_column) {
+        int row = this.return_coordinates()[0];
+        int column = this.return_coordinates()[1];
+        boolean colour = this.is_white();
         if (this.check_if_move_possible(curr_position, new_row, new_column)) {
+            Figure[][] position_after_move = new Figure[8][8];
+            for (int i = 0; i < 8; i++) {
+                position_after_move[i] = Arrays.copyOf(curr_position[i], 8);
+            }
+            position_after_move[new_row][new_column] = new Rook(new_row, new_column, colour, false);
+            position_after_move[row][column] = null;
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (position_after_move[i][j] != null) {
+                        if (Objects.equals(position_after_move[i][j].get_name(), "King")) {
+                            if (colour == position_after_move[i][j].is_white()) {
+                                return (!((King) position_after_move[i][j]).check(position_after_move));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void move(Figure[][] curr_position, int new_row, int new_column) {
+        if (this.move_is_possible(curr_position, new_row, new_column)) {
             int row = this.return_coordinates()[0];
             int column = this.return_coordinates()[1];
             curr_position[new_row][new_column] = this;
@@ -115,12 +144,12 @@ public class Rook extends Figure {
         int row = this.return_coordinates()[0];
         int column = this.return_coordinates()[1];
         for (int i = 0; i < 8; i++) {
-            if (this.check_if_move_possible(curr_position, i, column)) {
+            if (this.move_is_possible(curr_position, i, column)) {
                 possible_moves.add(new int[] { i, column });
             }
         }
         for (int i = 0; i < 8; i++) {
-            if (this.check_if_move_possible(curr_position, row, i)) {
+            if (this.move_is_possible(curr_position, row, i)) {
                 possible_moves.add(new int[] { row, i });
             }
         }

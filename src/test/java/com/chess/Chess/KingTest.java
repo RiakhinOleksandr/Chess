@@ -93,4 +93,15 @@ public class KingTest {
     }
   }
 
+  @Test
+  public void check_for_check() {
+    position[1][1] = new King(1, 1, true, false);
+    position[6][6] = new King(6, 6, false, false);
+    position[6][1] = new Rook(6, 1, true, false);
+    position[4][4] = new Knight(4, 4, true, false);
+    position[5][5] = new Bishop(5, 5, false);
+    position[1][2] = new Knight(1, 2, false, false);
+    Assertions.assertEquals(((King) position[1][1]).check(position), false);
+    Assertions.assertEquals(((King) position[6][6]).check(position), true);
+  }
 }
