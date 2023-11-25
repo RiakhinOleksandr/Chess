@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 public class King extends Figure {
 
+  private boolean castle_move;
+
   public King(int row, int column, boolean is_white, boolean not_moved) {
     try {
       if (row >= 0 & row < 8 & column >= 0 & column < 8) {
@@ -33,8 +35,11 @@ public class King extends Figure {
       }
 
       if (can_castle(curr_position, new_row, new_column)) {
+        this.castle_move = true;
         return true;
       }
+
+      this.castle_move = false;
 
       if (Math.abs((new_column - column) * (new_row - row)) == 1
           || Math.abs(new_column - column) + Math.abs(new_row - row) == 1) {
@@ -80,7 +85,8 @@ public class King extends Figure {
       for (int i = 0; i < 8; i++) {
         position_after_move[i] = Arrays.copyOf(curr_position[i], 8);
       }
-      if (can_castle(position_after_move, new_row, new_column)) {
+
+      if (this.castle_move) {
         if (new_column == 1) { // short castling
           position_after_move[new_row][2] = new Rook(new_row, 2, colour, false);
           position_after_move[new_row][0] = null;
@@ -97,28 +103,66 @@ public class King extends Figure {
   }
 
   public boolean can_castle(Figure[][] curr_position, int new_row, int new_column) {
-    int row = this.return_coordinates()[0];
-
     if (!this.not_moved()) {
       return false;
     }
 
-    // if king is in check return false
+    int row = this.return_coordinates()[0];
+    boolean colour = this.is_white();
+    Figure[][] position_after_move;
 
     if (new_row == row) {
       if (new_column == 1) { // short castling
         if (curr_position[row][0] != null && curr_position[row][0].not_moved()) {
           if (curr_position[row][2] == null && curr_position[row][1] == null) {
-            // check if positions (row, 2) (row, 1) puts king in check
+
+            if (this.check(curr_position)) {
+              return false;
+            }
+
+            position_after_move = new Figure[8][8];
+            for (int i = 0; i < 8; i++) {
+              position_after_move[i] = Arrays.copyOf(curr_position[i], 8);
+            }
+
+            position_after_move[row][2] = new King(row, 2, colour, false);
+            position_after_move[row][3] = null;
+
+            if (((King) position_after_move[row][2]).check(position_after_move)) {
+              return false;
+            }
+
             return true;
           }
-
         }
 
       } else if (new_column == 5) { // long castling
         if (curr_position[row][7] != null && curr_position[row][7].not_moved()) {
           if (curr_position[row][4] == null && curr_position[row][5] == null && curr_position[row][6] == null) {
-            // check if positions (row, 4) (row, 5) (row, 6) puts king in check
+
+            if (this.check(curr_position)) {
+              return false;
+            }
+
+            position_after_move = new Figure[8][8];
+            for (int i = 0; i < 8; i++) {
+              position_after_move[i] = Arrays.copyOf(curr_position[i], 8);
+            }
+
+            position_after_move[row][4] = new King(row, 4, colour, false);
+            position_after_move[row][3] = null;
+
+            if (((King) position_after_move[row][4]).check(position_after_move)) {
+              return false;
+            }
+
+            position_after_move[row][5] = new King(row, 5, colour, false);
+            position_after_move[row][4] = null;
+
+            if (((King) position_after_move[row][5]).check(position_after_move)) {
+              return false;
+            }
+
             return true;
           }
         }
@@ -132,7 +176,7 @@ public class King extends Figure {
   public void move(Figure[][] curr_position, int new_row, int new_column) {
     if (this.move_is_possible(curr_position, new_row, new_column)) {
 
-      if (can_castle(curr_position, new_row, new_column)) {
+      if (this.castle_move) {
         if (new_column == 1) { // short castling
           // moving king
           curr_position[new_row][1] = this;
@@ -191,10 +235,10 @@ public class King extends Figure {
     }
 
     if (row == 0 || row == 7) {
-      if (this.can_castle(curr_position, row, 1)) {
+      if (this.move_is_possible(curr_position, row, 1)) {
         possible_moves.add(new int[] { row, 1 });
       }
-      if (this.can_castle(curr_position, row, 5)) {
+      if (this.move_is_possible(curr_position, row, 5)) {
         possible_moves.add(new int[] { row, 5 });
       }
     }

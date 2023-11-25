@@ -43,11 +43,16 @@ public class KingTest {
 
     position[7][3] = new King(7, 3, true, true);
     position[7][7] = new Rook(7, 7, true, true);
+    position[5][2] = new Knight(5, 2, false, false);
 
+    Assertions.assertEquals(false, ((King) position[7][3]).can_castle(position, 7, 5));
+
+    position[5][2] = null;
     position[7][3].move(position, 7, 5);
     Assertions.assertEquals("King", position[7][5].get_name());
     Assertions.assertEquals("Rook", position[7][4].get_name());
     Assertions.assertEquals(null, position[7][3]);
+
   }
 
   @Test
