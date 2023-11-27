@@ -1,6 +1,8 @@
 package com.chess.Chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Board {
     Figure[][] position = new Figure[8][8];
@@ -36,6 +38,49 @@ public class Board {
 
     public Figure getFigure(int row, int column) {
         return position[row][column];
+    }
+
+    public Figure[] getFiguresOfColor(boolean color) {
+        Figure[][] currPosition = this.position;
+        Figure[] result = new Figure[16];
+        int index = 0;
+
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                Figure currFigure = currPosition[i][j];
+
+                if (currFigure != null && currFigure.is_white() == color) {
+                    result[index] = currFigure;
+                    index++;
+                }
+            }
+        }
+        return Arrays.copyOf(result, index);
+    }
+
+    public boolean isAnyMovePossible(boolean color) {
+        Figure[][] currPosition = this.position;
+        Figure[] playerFigures = getFiguresOfColor(color);
+        for (Figure piece : playerFigures) {
+            if (!piece.get_possible_moves(currPosition).isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Returns true if a player, whose color is the parameter is checkmated, false if stalemated.
+    // Should only be called if (isAnyMovePossible == false)
+    public boolean isCheckmate(boolean color) {
+        Figure[][] currPosition = this.position;
+        Figure[] playerFigures = getFiguresOfColor(color);
+        for (Figure piece : playerFigures) {
+            if (Objects.equals(piece.get_name(), "King")) {
+                King king = (King) piece;
+                return king.check(currPosition);
+            }
+        }
+        return false;
     }
 
     public void Move(int figureRow, int figureColumn, int posRow, int posColumn) {
