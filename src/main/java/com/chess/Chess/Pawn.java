@@ -162,13 +162,13 @@ public class Pawn extends Figure {
                 }
                 position_after_move[new_row][new_column] = new Pawn(new_row, new_column, colour, false);
                 position_after_move[row][column] = null;
-                for (int i = 0; i < 8; i++) {
-                    for (int j = 0; j < 8; j++) {
-                        if (position_after_move[i][j] != null) {
-                            if (Objects.equals(position_after_move[i][j].get_name(), "King")) {
-                                if (colour == position_after_move[i][j].is_white()) {
-                                    return (!((King) position_after_move[i][j]).check(position_after_move));
-                                }
+            }
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    if (position_after_move[i][j] != null) {
+                        if (Objects.equals(position_after_move[i][j].get_name(), "King")) {
+                            if (colour == position_after_move[i][j].is_white()) {
+                                return (!((King) position_after_move[i][j]).check(position_after_move));
                             }
                         }
                     }
