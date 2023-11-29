@@ -11,6 +11,10 @@ public class UserMessage {
 
     private ArrayList<int[]> posibleMoves;
 
+    private String[] players = new String[2];
+
+    private ArrayList<String> notation = new ArrayList<String>();
+
     public String getContent() {
         return content;
     }
@@ -31,6 +35,10 @@ public class UserMessage {
         return posibleMoves;
     }
 
+    public String[] getPlayers(){return players;}
+
+    public ArrayList<String> getNotation(){return notation;}
+
     public void setContent(String content) {
         this.content =  content;
     }
@@ -49,5 +57,12 @@ public class UserMessage {
 
     public void setPosibleMoves(ArrayList<int[]> posibleMoves) {
         this.posibleMoves =  posibleMoves;
+    }
+
+    public void setPlayers(String[] players) {
+        this.players =  players;
+    }
+    public void setNotation(ArrayList<String> notation) {
+        this.notation =  notation;
     }
 }

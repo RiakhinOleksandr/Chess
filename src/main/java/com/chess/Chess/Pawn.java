@@ -183,10 +183,10 @@ public class Pawn extends Figure {
         if (this.move_is_possible(curr_position, new_row, new_column)) {
             int row = this.return_coordinates()[0];
             int column = this.return_coordinates()[1];
-            if (new_row == 0 | new_row == 7) {
+            //if (new_row == 0 | new_row == 7) {
                 // There must be option to choose figure for promote
-                this.promote(curr_position, new_row, new_column, "Queen");
-            } else {
+                //this.promote(curr_position, new_row, new_column, "Queen");
+            //} else {
                 if (this.check_for_en_passant(curr_position, new_row, new_column)) {
                     curr_position[row][new_column] = null;
                 } else if (new_row - row == 2 | new_row - row == -2) {
@@ -196,7 +196,7 @@ public class Pawn extends Figure {
                 curr_position[row][column] = null;
                 curr_position[new_row][new_column].set_coordinates(new_row, new_column);
                 curr_position[new_row][new_column].set_not_moved(false);
-            }
+            //}
         } else {
             try {
                 throw new ImpossibleMove();
