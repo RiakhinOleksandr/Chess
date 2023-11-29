@@ -16,8 +16,6 @@ public class ChessApplication {
 
 	@GetMapping("/")
 	public String index(Model model) {
-		// Дошка находиться в Board.java
-		// Те що знизу просто щоб відмалювати дошку
 		Figure[][] position = new Figure[8][8];
 
 		model.addAttribute("board", position);

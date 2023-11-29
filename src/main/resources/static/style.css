@@ -49,6 +49,7 @@ table {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 td{
     width: 90px;
@@ -108,4 +109,34 @@ tfoot td, thead td{
     margin: 5px 0 0 0;
     height: 80px;
     width: 80px;
+}
+.ChessBoardSides{
+    flex: auto;
+}
+.PageMiddle{
+    display: flex;
+    width: 100vw;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.Notation{
+    height: 500px;
+    width: 300px;
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+}
+#NotationLeft, #NotationRight{
+    background-color: #4b4b4b;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 16px;
+}
+.NotationUl{
+    color: #ffffff;
+    font-size: 24px;
 }

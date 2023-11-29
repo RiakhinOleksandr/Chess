@@ -7,8 +7,12 @@ import java.util.Objects;
 public class Board {
     Figure[][] position = new Figure[8][8];
 
-    String player1;
-    String player2;
+    private boolean gameEnded = false;
+    private String playerWhite = null;
+    private String playerBlack = null;
+    private final ArrayList<String> notation = new ArrayList<>();
+    boolean playerWhiteTurn = true;
+    private final char[] letters = {'h','g','f','e','d','c','b','a'};
 
     public Board() {
         this.position[0][0] = new Rook(0, 0, true, true);
@@ -20,7 +24,7 @@ public class Board {
         this.position[0][6] = new Knight(0, 6, true, false);
         this.position[0][7] = new Rook(0, 7, true, true);
         for (int i = 0; i < 8; i++) {
-            this.position[1][i] = new Pawn(1, i, true, true);
+            this.position[1][i] = new Pawn(5, i, true, false);
         }
 
         this.position[7][0] = new Rook(7, 0, false, true);
@@ -83,16 +87,45 @@ public class Board {
         return false;
     }
 
-    public void Move(int figureRow, int figureColumn, int posRow, int posColumn) {
-        try {
-            position[figureRow][figureColumn].move(position, posRow, posColumn);
-        } catch (Exception e) {
-            // Block of code to handle errors
+    public boolean Move(String player, int figureRow, int figureColumn, int posRow, int posColumn) {
+        if((Objects.equals(player, this.playerWhite) && this.playerWhiteTurn && this.position[figureRow][figureColumn].is_white()) ||
+                (Objects.equals(player, this.playerBlack) && !this.playerWhiteTurn && !this.position[figureRow][figureColumn].is_white())) {
+            try {
+                this.position[figureRow][figureColumn].move(this.position, posRow, posColumn);
+                this.playerWhiteTurn = !this.playerWhiteTurn;
+                this.notation.add(""+this.position[posRow][posColumn].get_name().charAt(0)+letters[figureColumn]+ (figureRow + 1) +"-"+letters[posColumn]+ (posRow + 1));
+                //Time Update
+                return true;
+            } catch (Exception e) {
+                //  Block of code to handle errors
+            }
         }
+        return false;
     }
 
     public Figure[][] getFiguresOnBoard() {
-        return position;
+        return this.position;
     }
 
+    public void  setPlayer(String player){
+        if(this.playerWhite == null){
+            this.playerWhite = player;
+        }else if(this.playerBlack == null && !Objects.equals(player, this.playerWhite)){
+            this.playerBlack = player;
+            //Time Start
+        }
+    }
+    public ArrayList<String> getNotation(){
+        return this.notation;
+    }
+    public String[]  getPlayers(){
+        return new String[] {this.playerWhite, this.playerBlack};
+    }
+
+    public void SetGameEnded(){
+        this.gameEnded = true;
+    }
+    public boolean getGameEnded(){
+        return this.gameEnded;
+    }
 }
