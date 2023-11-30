@@ -1,5 +1,10 @@
 package com.chess.Chess;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -160,6 +165,55 @@ public class Board {
             }
         }
         return false;
+    }
+
+    public void saveGameToFile(String fileName) {
+        fileName = getUniqueFileName("games", fileName);
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(fileName);
+
+            writer.write("White player: " + this.playerWhite + '\n');
+            writer.write("Black player: " + this.playerBlack + '\n');
+            writer.write("----------------------\n");
+
+
+            for (String move : this.notation) {
+                writer.write(move);
+                writer.write('\n');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Something went wrong when closing FileWriter", e);
+            }
+        }
+    }
+
+    private String getUniqueFileName(String folderName, String fileName) {
+        createDirectoryIfNotExists(folderName);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String timeStamp = dateFormat.format(new Date());
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex != -1) {
+            return folderName + File.separator + fileName.substring(0, dotIndex) +
+                    "_" + timeStamp + fileName.substring(dotIndex);
+        } else {
+            return folderName + File.separator + fileName + "_" + timeStamp;
+        }
+    }
+
+    private void createDirectoryIfNotExists(String directoryPath) {
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
     }
 
     public Figure[][] getFiguresOnBoard() {
