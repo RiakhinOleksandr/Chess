@@ -51,6 +51,13 @@ public class QueenTest {
     }
 
     @Test
+    public void check_move_possible() {
+        position[0][4] = new Rook(0, 4, false, false);
+        Assertions.assertFalse(position[3][4].move_is_possible(position, 2, 3));
+        Assertions.assertTrue(position[3][4].move_is_possible(position, 0, 4));
+    }
+
+    @Test
     void jumpOverPieceTest() {
         position[3][2] = new Queen(3, 2, false);
         position[3][4].move(position, 3, 1);

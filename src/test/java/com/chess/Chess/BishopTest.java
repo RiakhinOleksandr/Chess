@@ -41,6 +41,14 @@ public class BishopTest {
     }
 
     @Test
+    public void check_move_possible() {
+        position[1][1] = new Bishop(1, 1, true);
+        position[6][6] = new Bishop(6, 6, false);
+        Assertions.assertFalse(position[1][1].move_is_possible(position, 2, 0));
+        Assertions.assertTrue(position[1][1].move_is_possible(position, 5, 5));
+    }
+
+    @Test
     void illegalStationaryMoveTest() {
         Assertions.assertFalse(position[0][2].check_if_move_possible(position, 0, 2));
     }

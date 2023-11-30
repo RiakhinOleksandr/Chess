@@ -12,7 +12,7 @@ public class Board {
     private String playerBlack = null;
     private final ArrayList<String> notation = new ArrayList<>();
     boolean playerWhiteTurn = true;
-    private final char[] letters = {'h','g','f','e','d','c','b','a'};
+    private final char[] letters = { 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a' };
 
     public Board() {
         this.position[0][0] = new Rook(0, 0, true, true);
@@ -24,7 +24,7 @@ public class Board {
         this.position[0][6] = new Knight(0, 6, true, false);
         this.position[0][7] = new Rook(0, 7, true, true);
         for (int i = 0; i < 8; i++) {
-            this.position[1][i] = new Pawn(5, i, true, false);
+            this.position[1][i] = new Pawn(1, i, true, true);
         }
 
         this.position[7][0] = new Rook(7, 0, false, true);
@@ -73,7 +73,8 @@ public class Board {
         return false;
     }
 
-    // Returns true if a player, whose color is the parameter is checkmated, false if stalemated.
+    // Returns true if a player, whose color is the parameter is checkmated, false
+    // if stalemated.
     // Should only be called if (isAnyMovePossible == false)
     public boolean isCheckmate(boolean color) {
         Figure[][] currPosition = this.position;
@@ -87,17 +88,35 @@ public class Board {
         return false;
     }
 
+    public void reset_en_passant(boolean colour) {
+        for (int i = 3; i < 5; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (this.position[i][j] != null) {
+                    if (Objects.equals(this.position[i][j].get_name(), "Pawn")) {
+                        if (colour == this.position[i][j].is_white()) {
+                            ((Pawn) this.position[i][j]).set_en_passant(false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public boolean Move(String player, int figureRow, int figureColumn, int posRow, int posColumn) {
-        if((Objects.equals(player, this.playerWhite) && this.playerWhiteTurn && this.position[figureRow][figureColumn].is_white()) ||
-                (Objects.equals(player, this.playerBlack) && !this.playerWhiteTurn && !this.position[figureRow][figureColumn].is_white())) {
+        if ((Objects.equals(player, this.playerWhite) && this.playerWhiteTurn
+                && this.position[figureRow][figureColumn].is_white()) ||
+                (Objects.equals(player, this.playerBlack) && !this.playerWhiteTurn
+                        && !this.position[figureRow][figureColumn].is_white())) {
             try {
                 this.position[figureRow][figureColumn].move(this.position, posRow, posColumn);
                 this.playerWhiteTurn = !this.playerWhiteTurn;
-                this.notation.add(""+this.position[posRow][posColumn].get_name().charAt(0)+letters[figureColumn]+ (figureRow + 1) +"-"+letters[posColumn]+ (posRow + 1));
-                //Time Update
+                this.reset_en_passant(this.playerWhiteTurn);
+                this.notation.add("" + this.position[posRow][posColumn].get_name().charAt(0) + letters[figureColumn]
+                        + (figureRow + 1) + "-" + letters[posColumn] + (posRow + 1));
+                // Time Update
                 return true;
             } catch (Exception e) {
-                //  Block of code to handle errors
+                // Block of code to handle errors
             }
         }
         return false;
@@ -107,25 +126,28 @@ public class Board {
         return this.position;
     }
 
-    public void  setPlayer(String player){
-        if(this.playerWhite == null){
+    public void setPlayer(String player) {
+        if (this.playerWhite == null) {
             this.playerWhite = player;
-        }else if(this.playerBlack == null && !Objects.equals(player, this.playerWhite)){
+        } else if (this.playerBlack == null && !Objects.equals(player, this.playerWhite)) {
             this.playerBlack = player;
-            //Time Start
+            // Time Start
         }
     }
-    public ArrayList<String> getNotation(){
+
+    public ArrayList<String> getNotation() {
         return this.notation;
     }
-    public String[]  getPlayers(){
-        return new String[] {this.playerWhite, this.playerBlack};
+
+    public String[] getPlayers() {
+        return new String[] { this.playerWhite, this.playerBlack };
     }
 
-    public void SetGameEnded(){
+    public void SetGameEnded() {
         this.gameEnded = true;
     }
-    public boolean getGameEnded(){
+
+    public boolean getGameEnded() {
         return this.gameEnded;
     }
 }

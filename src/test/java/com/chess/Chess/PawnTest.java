@@ -53,6 +53,16 @@ public class PawnTest {
     }
 
     @Test
+    public void check_move_possible() {
+        position[1][1] = new Pawn(1, 1, true, true);
+        position[1][2] = new Pawn(1, 2, true, true);
+        position[5][5] = new Bishop(5, 5, false);
+        Assertions.assertFalse(position[1][1].move_is_possible(position, 3, 1));
+        position[1][2].move(position, 2, 2);
+        Assertions.assertTrue(position[1][1].move_is_possible(position, 3, 1));
+    }
+
+    @Test
     public void check_for_possible_moves() {
         position[1][2] = new Pawn(1, 2, true, true);
         position[2][4] = new Pawn(1, 1, true, false);
