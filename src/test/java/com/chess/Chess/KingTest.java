@@ -32,6 +32,16 @@ public class KingTest {
   }
 
   @Test
+  public void check_move_possible() {
+    position[0][1] = new King(0, 1, true, false);
+    position[6][2] = new Rook(6, 2, false, false);
+    position[7][7] = new Bishop(7, 7, false);
+    Assertions.assertFalse(position[0][1].move_is_possible(position, 0, 2));
+    Assertions.assertFalse(position[0][1].move_is_possible(position, 0, 0));
+    Assertions.assertTrue(position[0][1].move_is_possible(position, 1, 0));
+  }
+
+  @Test
   public void check_castle_move() {
     position[0][3] = new King(0, 3, false, true);
     position[0][0] = new Rook(0, 0, false, true);

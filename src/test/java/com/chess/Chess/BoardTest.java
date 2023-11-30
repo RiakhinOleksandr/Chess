@@ -28,18 +28,29 @@ public class BoardTest {
         Assertions.assertEquals(16, whitePieces.length);
         // uncomment to see how it works
 
-//        for (Figure figure : whitePieces) {
-//            System.out.println("-------------------");
-//            System.out.println(figure.get_name());
-//            System.out.println(figure.is_white());
-//            if (figure.get_possible_moves(position).isEmpty()) {
-//                System.out.println("No possible moves");
-//            }
-//            for (int[] arr : figure.get_possible_moves(position)) {
-//                System.out.println(Arrays.toString(arr));
-//            }
-//            System.out.println("-------------------");
-//        }
+        // for (Figure figure : whitePieces) {
+        // System.out.println("-------------------");
+        // System.out.println(figure.get_name());
+        // System.out.println(figure.is_white());
+        // if (figure.get_possible_moves(position).isEmpty()) {
+        // System.out.println("No possible moves");
+        // }
+        // for (int[] arr : figure.get_possible_moves(position)) {
+        // System.out.println(Arrays.toString(arr));
+        // }
+        // System.out.println("-------------------");
+        // }
+    }
+
+    @Test
+    public void check_reseting_en_passant() {
+        position[1][3].move(position, 3, 3);
+        position[1][5].move(position, 3, 5);
+        position[6][0].move(position, 4, 0);
+        board.reset_en_passant(true);
+        Assertions.assertFalse(((Pawn) position[3][3]).en_passant());
+        Assertions.assertFalse(((Pawn) position[3][5]).en_passant());
+        Assertions.assertTrue(((Pawn) position[4][0]).en_passant());
     }
 
     @Test

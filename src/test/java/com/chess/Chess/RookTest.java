@@ -16,6 +16,14 @@ public class RookTest {
     }
 
     @Test
+    public void check_move_possible() {
+        position[0][2] = new Rook(0, 2, true, false);
+        position[0][6] = new Rook(0, 6, false, false);
+        Assertions.assertFalse(position[0][2].move_is_possible(position, 2, 2));
+        Assertions.assertTrue(position[0][2].move_is_possible(position, 0, 5));
+    }
+
+    @Test
     public void move_horizontal() {
         position[2][3] = new Rook(2, 3, true, false);
         position[2][7] = new Rook(2, 7, false, false);
