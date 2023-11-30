@@ -71,6 +71,6 @@ public class BoardTest {
         position[1][2].move(position, 2, 2);
         position[7][4].move(position, 3, 0);
 
-        Assertions.assertTrue(board.isCheckmate(true));
+        Assertions.assertTrue(board.isKingInCheck(true));
     }
 }
