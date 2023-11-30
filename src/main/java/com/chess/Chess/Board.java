@@ -123,15 +123,16 @@ public class Board {
                 this.playerWhiteTurn = !this.playerWhiteTurn;
                 this.reset_en_passant(this.playerWhiteTurn);
 
+                String moveNotation = "";
+
                 // Handling castling
                 if (Objects.equals(movedFigure.get_name(), "King") && Math.abs(posColumn - figureColumn) == 2) {
                     if (posColumn > figureColumn) {
-                        this.notation.add("O-O-O");
+                        moveNotation += "O-O-O";
                     } else {
-                        this.notation.add("O-O");
+                        moveNotation += "O-O";
                     }
                 } else {
-                    String moveNotation = "";
 
                     if (Objects.equals(movedFigure.get_name(), "Pawn")) {
                         moveNotation += "" + letters[figureColumn]+(figureRow+1);
@@ -144,20 +145,30 @@ public class Board {
 
                     if (squareToBeOccupied != null) {
                         moveNotation += "x";
+                    } else if (Objects.equals(movedFigure.get_name(), "Pawn") && posColumn != figureColumn) {
+                        // Handling en passant
+                        moveNotation += "x";
                     } else {
                         moveNotation += "-";
                     }
                     moveNotation += "" + letters[posColumn] + (posRow + 1);
-
-                    if (isKingInCheck(playerWhiteTurn)) {
-                        if (!isAnyMovePossible(playerWhiteTurn)) { // Handling checkmate
-                            moveNotation += "#";
-                        } else { // Handling check
-                            moveNotation += "+";
+                    // Handling promotion(this can't really do the job yet)
+                    if (Objects.equals(movedFigure.get_name(), "Pawn") && (posRow == 0 || posRow == 7)) {
+                        if (Objects.equals(this.position[posRow][posColumn].get_name(), "Knight")) {
+                            moveNotation += "=N";
+                        } else {
+                            moveNotation += "=" + this.position[posRow][posColumn].get_name().charAt(0);
                         }
                     }
-                    this.notation.add(moveNotation);
                 }
+                if (isKingInCheck(playerWhiteTurn)) {
+                    if (!isAnyMovePossible(playerWhiteTurn)) { // Handling checkmate
+                        moveNotation += "#";
+                    } else { // Handling check
+                        moveNotation += "+";
+                    }
+                }
+                this.notation.add(moveNotation);
                 // Time Update
                 return true;
             } catch (Exception e) {
