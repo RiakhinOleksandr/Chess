@@ -25,7 +25,7 @@ public class BoardContoller {
             if(board.isKingInCheck(board.playerWhiteTurn)) {
                 message.setType("Winner " + !board.playerWhiteTurn + " checkmated");
             }else {
-                message.setType("Draw! " + !board.playerWhiteTurn + " stalemated");
+                message.setType("Winner " + !board.playerWhiteTurn + " stalemated");
             }
         }
         return message;
@@ -64,7 +64,7 @@ public class BoardContoller {
                     if(board.isKingInCheck(board.playerWhiteTurn)) {
                         message.setType("Winner " + !board.playerWhiteTurn + " checkmated");
                     }else {
-                        message.setType("Draw! " + !board.playerWhiteTurn + " stalemated");
+                        message.setType("Winner " + !board.playerWhiteTurn + " stalemated");
                     }
                 }else {
                     message.setType("BoardLoad");
