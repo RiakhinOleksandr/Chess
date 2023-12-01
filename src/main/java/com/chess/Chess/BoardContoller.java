@@ -22,7 +22,7 @@ public class BoardContoller {
             message.setType("BoardLoad");
         }else {
             board.SetGameEnded();
-            if(board.isCheckmate(board.playerWhiteTurn)) {
+            if(board.isKingInCheck(board.playerWhiteTurn)) {
                 message.setType("Winner " + !board.playerWhiteTurn + " checkmated");
             }else {
                 message.setType("Winner " + !board.playerWhiteTurn + " stalemated");
@@ -58,8 +58,9 @@ public class BoardContoller {
                 message.setBoard(board.getFiguresOnBoard());
                 message.setNotation(board.getNotation());
                 if(!board.isAnyMovePossible(board.playerWhiteTurn)){
+                    board.saveGameToFile("game.txt");
                     board.SetGameEnded();
-                    if(board.isCheckmate(board.playerWhiteTurn)) {
+                    if(board.isKingInCheck(board.playerWhiteTurn)) {
                         message.setType("Winner " + !board.playerWhiteTurn + " checkmated");
                     }else {
                         message.setType("Winner " + !board.playerWhiteTurn + " stalemated");

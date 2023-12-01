@@ -1,5 +1,10 @@
 package com.chess.Chess;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -73,10 +78,14 @@ public class Board {
         return false;
     }
 
-    // Returns true if a player, whose color is the parameter is checkmated, false
-    // if stalemated.
-    // Should only be called if (isAnyMovePossible == false)
-    public boolean isCheckmate(boolean color) {
+    // R̶e̶t̶u̶r̶n̶s̶ ̶t̶r̶u̶e̶ ̶i̶f̶ ̶a̶ ̶p̶l̶a̶y̶e̶r̶,̶ ̶w̶h̶o̶s̶e̶ ̶c̶o̶l̶o̶r̶ ̶i̶s̶ ̶t̶h̶e̶ ̶p̶a̶r̶a̶m̶e̶t̶e̶r̶,̶ ̶i̶s̶ ̶c̶h̶e̶c̶k̶m̶a̶t̶e̶d̶,̶ ̶f̶a̶l̶s̶e̶
+    // i̶f̶ ̶s̶t̶a̶l̶e̶m̶a̶t̶e̶d̶.̶
+    // S̶h̶o̶u̶l̶d̶ ̶o̶n̶l̶y̶ ̶b̶e̶ ̶c̶a̶l̶l̶e̶d̶ ̶i̶f̶ ̶(̶i̶s̶A̶n̶y̶M̶o̶v̶e̶P̶o̶s̶s̶i̶b̶l̶e̶ ̶=̶=̶ ̶f̶a̶l̶s̶e̶)̶
+    // UPDATE: renamed isCheckmate(bool color) -> isKingInCheck(bool color), new is more clear about what method does;
+    // Returns true, if the King piece of a player, whose color is the parameter is in check, false otherwise.
+    // When called under the condition of (isAnyMovePossible == false), indicates checkmate if true,
+    // stalemate if false.
+    public boolean isKingInCheck(boolean color) {
         Figure[][] currPosition = this.position;
         Figure[] playerFigures = getFiguresOfColor(color);
         for (Figure piece : playerFigures) {
@@ -108,11 +117,58 @@ public class Board {
                 (Objects.equals(player, this.playerBlack) && !this.playerWhiteTurn
                         && !this.position[figureRow][figureColumn].is_white())) {
             try {
-                this.position[figureRow][figureColumn].move(this.position, posRow, posColumn);
+                Figure movedFigure = this.position[figureRow][figureColumn];
+                Figure squareToBeOccupied = this.position[posRow][posColumn];
+                movedFigure.move(this.position, posRow, posColumn);
                 this.playerWhiteTurn = !this.playerWhiteTurn;
                 this.reset_en_passant(this.playerWhiteTurn);
-                this.notation.add("" + this.position[posRow][posColumn].get_name().charAt(0) + letters[figureColumn]
-                        + (figureRow + 1) + "-" + letters[posColumn] + (posRow + 1));
+
+                String moveNotation = "";
+
+                // Handling castling
+                if (Objects.equals(movedFigure.get_name(), "King") && Math.abs(posColumn - figureColumn) == 2) {
+                    if (posColumn > figureColumn) {
+                        moveNotation += "O-O-O";
+                    } else {
+                        moveNotation += "O-O";
+                    }
+                } else {
+
+                    if (Objects.equals(movedFigure.get_name(), "Pawn")) {
+                        moveNotation += "" + letters[figureColumn]+(figureRow+1);
+                    } else if (Objects.equals(movedFigure.get_name(), "Knight")) {
+                        moveNotation += "N"+letters[figureColumn]+(figureRow+1);
+                    } else {
+                        moveNotation += "" + movedFigure.get_name().charAt(0) + letters[figureColumn] +
+                                (figureRow+1);
+                    }
+
+                    if (squareToBeOccupied != null) {
+                        moveNotation += "x";
+                    } else if (Objects.equals(movedFigure.get_name(), "Pawn") && posColumn != figureColumn) {
+                        // Handling en passant
+                        moveNotation += "x";
+                    } else {
+                        moveNotation += "-";
+                    }
+                    moveNotation += "" + letters[posColumn] + (posRow + 1);
+                    // Handling promotion(this can't really do the job yet)
+                    if (Objects.equals(movedFigure.get_name(), "Pawn") && (posRow == 0 || posRow == 7)) {
+                        if (Objects.equals(this.position[posRow][posColumn].get_name(), "Knight")) {
+                            moveNotation += "=N";
+                        } else {
+                            moveNotation += "=" + this.position[posRow][posColumn].get_name().charAt(0);
+                        }
+                    }
+                }
+                if (isKingInCheck(playerWhiteTurn)) {
+                    if (!isAnyMovePossible(playerWhiteTurn)) { // Handling checkmate
+                        moveNotation += "#";
+                    } else { // Handling check
+                        moveNotation += "+";
+                    }
+                }
+                this.notation.add(moveNotation);
                 // Time Update
                 return true;
             } catch (Exception e) {
@@ -120,6 +176,55 @@ public class Board {
             }
         }
         return false;
+    }
+
+    public void saveGameToFile(String fileName) {
+        fileName = getUniqueFileName("games", fileName);
+        FileWriter writer = null;
+        try {
+            writer = new FileWriter(fileName);
+
+            writer.write("White player: " + this.playerWhite + '\n');
+            writer.write("Black player: " + this.playerBlack + '\n');
+            writer.write("----------------------\n");
+
+
+            for (String move : this.notation) {
+                writer.write(move);
+                writer.write('\n');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Something went wrong when closing FileWriter", e);
+            }
+        }
+    }
+
+    private String getUniqueFileName(String folderName, String fileName) {
+        createDirectoryIfNotExists(folderName);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String timeStamp = dateFormat.format(new Date());
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex != -1) {
+            return folderName + File.separator + fileName.substring(0, dotIndex) +
+                    "_" + timeStamp + fileName.substring(dotIndex);
+        } else {
+            return folderName + File.separator + fileName + "_" + timeStamp;
+        }
+    }
+
+    private void createDirectoryIfNotExists(String directoryPath) {
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
     }
 
     public Figure[][] getFiguresOnBoard() {
