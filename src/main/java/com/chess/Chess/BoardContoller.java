@@ -54,6 +54,7 @@ public class BoardContoller {
                 if((result[2] == 0 || result[2] == 7) && board.getFigure(result[2],result[3]).get_name().equals("Pawn") ){
                     Pawn temp = new Pawn(result[0], result[1],  board.getFigure(result[2],result[3]).is_white(), true);
                     temp.promote(board.getFiguresOnBoard(), result[2], result[3], pos[4]);
+                    board.notate_promotion(result[0], result[1], result[2], result[3], pos[4]);
                 }
                 message.setBoard(board.getFiguresOnBoard());
                 message.setNotation(board.getNotation());
