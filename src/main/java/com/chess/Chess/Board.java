@@ -111,6 +111,30 @@ public class Board {
         }
     }
 
+    public void notate_promotion(int row, int column, int new_row, int new_column, String name){
+        String moveNotation = "";
+        moveNotation += "" + letters[column]+(row+1);
+        if (this.position[new_row][new_column] != null) {
+            moveNotation += "x";
+        } else {
+            moveNotation += "-";
+        }
+        moveNotation += "" + letters[new_column] + (new_row + 1);
+        if(Objects.equals(name, "Knight")){
+             moveNotation += 'N';
+        } else{
+            moveNotation += name.charAt(0);
+        }
+        if (isKingInCheck(playerWhiteTurn)) {
+            if (!isAnyMovePossible(playerWhiteTurn)) { // Handling checkmate
+                moveNotation += "#";
+            } else { // Handling check
+                moveNotation += "+";
+            }
+        }
+        this.notation.add(moveNotation);
+    }
+
     public boolean Move(String player, int figureRow, int figureColumn, int posRow, int posColumn) {
         if ((Objects.equals(player, this.playerWhite) && this.playerWhiteTurn
                 && this.position[figureRow][figureColumn].is_white()) ||
@@ -125,50 +149,44 @@ public class Board {
 
                 String moveNotation = "";
 
-                // Handling castling
-                if (Objects.equals(movedFigure.get_name(), "King") && Math.abs(posColumn - figureColumn) == 2) {
-                    if (posColumn > figureColumn) {
-                        moveNotation += "O-O-O";
-                    } else {
-                        moveNotation += "O-O";
-                    }
-                } else {
-
-                    if (Objects.equals(movedFigure.get_name(), "Pawn")) {
-                        moveNotation += "" + letters[figureColumn]+(figureRow+1);
-                    } else if (Objects.equals(movedFigure.get_name(), "Knight")) {
-                        moveNotation += "N"+letters[figureColumn]+(figureRow+1);
-                    } else {
-                        moveNotation += "" + movedFigure.get_name().charAt(0) + letters[figureColumn] +
-                                (figureRow+1);
-                    }
-
-                    if (squareToBeOccupied != null) {
-                        moveNotation += "x";
-                    } else if (Objects.equals(movedFigure.get_name(), "Pawn") && posColumn != figureColumn) {
-                        // Handling en passant
-                        moveNotation += "x";
-                    } else {
-                        moveNotation += "-";
-                    }
-                    moveNotation += "" + letters[posColumn] + (posRow + 1);
-                    // Handling promotion(this can't really do the job yet)
-                    if (Objects.equals(movedFigure.get_name(), "Pawn") && (posRow == 0 || posRow == 7)) {
-                        if (Objects.equals(this.position[posRow][posColumn].get_name(), "Knight")) {
-                            moveNotation += "=N";
+                if(!(Objects.equals(movedFigure.get_name(), "Pawn") && (posRow == 0 || posRow == 7))){
+                    // Handling castling
+                    if (Objects.equals(movedFigure.get_name(), "King") && Math.abs(posColumn - figureColumn) == 2) {
+                        if (posColumn > figureColumn) {
+                            moveNotation += "O-O-O";
                         } else {
-                            moveNotation += "=" + this.position[posRow][posColumn].get_name().charAt(0);
+                            moveNotation += "O-O";
+                        }
+                    } else {
+
+                        if (Objects.equals(movedFigure.get_name(), "Pawn")) {
+                            moveNotation += "" + letters[figureColumn]+(figureRow+1);
+                        } else if (Objects.equals(movedFigure.get_name(), "Knight")) {
+                            moveNotation += "N"+letters[figureColumn]+(figureRow+1);
+                        } else {
+                            moveNotation += "" + movedFigure.get_name().charAt(0) + letters[figureColumn] +
+                                    (figureRow+1);
+                        }
+
+                        if (squareToBeOccupied != null) {
+                            moveNotation += "x";
+                        } else if (Objects.equals(movedFigure.get_name(), "Pawn") && posColumn != figureColumn) {
+                            // Handling en passant
+                            moveNotation += "x";
+                        } else {
+                            moveNotation += "-";
+                        }
+                        moveNotation += "" + letters[posColumn] + (posRow + 1);
+                    }
+                    if (isKingInCheck(playerWhiteTurn)) {
+                        if (!isAnyMovePossible(playerWhiteTurn)) { // Handling checkmate
+                            moveNotation += "#";
+                        } else { // Handling check
+                            moveNotation += "+";
                         }
                     }
+                    this.notation.add(moveNotation);
                 }
-                if (isKingInCheck(playerWhiteTurn)) {
-                    if (!isAnyMovePossible(playerWhiteTurn)) { // Handling checkmate
-                        moveNotation += "#";
-                    } else { // Handling check
-                        moveNotation += "+";
-                    }
-                }
-                this.notation.add(moveNotation);
                 // Time Update
                 return true;
             } catch (Exception e) {
@@ -188,10 +206,21 @@ public class Board {
             writer.write("Black player: " + this.playerBlack + '\n');
             writer.write("----------------------\n");
 
-
+            int i = 0;
             for (String move : this.notation) {
+                if(i < 18){
+                    move = ' ' + move;
+                }
+                if (i % 2 == 0) {
+                    writer.write(Integer.toString(i / 2 + 1) + ") ");
+                    while (move.length() < 11) {
+                        move = move + ' ';
+                    }
+                } else {
+                    move = move + '\n';
+                }
                 writer.write(move);
-                writer.write('\n');
+                i++;
             }
         } catch (IOException e) {
             e.printStackTrace();
