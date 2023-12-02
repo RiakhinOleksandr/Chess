@@ -34,7 +34,7 @@ public class BoardContoller {
 
     @MessageMapping("/game.getMoves")
     @SendToUser("/topic/private")
-    public UserMessage sendPosMoves(@Payload UserMessage message, final Principal principal) {
+    public UserMessage sendPosMoves(@Payload UserMessage message) {
         String[] pos = message.getContent().split("_");
         int[] result = { Integer.parseInt(pos[0]), Integer.parseInt(pos[1]) };
         if (!board.getGameEnded()) {
@@ -67,6 +67,7 @@ public class BoardContoller {
             if (!board.isAnyMovePossible(board.playerWhiteTurn)) {
                 board.saveGameToFile("game.txt");
                 message.setType(board.SetGameEnded("NoAnyMovePossible", message.getSender()));
+                board = new Board();
             } else {
                 message.setType("BoardLoad");
             }
@@ -122,8 +123,7 @@ public class BoardContoller {
             }
         }
 
-        message.setContent(
-                String.valueOf(board.getTimesLeft()[0] - 1) + " " + String.valueOf(board.getTimesLeft()[1] - 1));
+        message.setContent(String.valueOf(board.getTimesLeft()[0] - 1) + " " + String.valueOf(board.getTimesLeft()[1] - 1));
         messagingTemplate.convertAndSend("/topic/public", message);
     }
 }

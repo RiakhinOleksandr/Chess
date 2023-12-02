@@ -304,6 +304,7 @@ tfoot td, thead td{
     width: 100%;
     text-align: center;
     z-index: 10;
+    margin-bottom: 24px;
 }
 #FindNewGame{
     z-index: 10;
@@ -315,4 +316,14 @@ tfoot td, thead td{
     border: 1px solid black;
     margin: 0 auto;
     display: none;
+}
+.WinInfoWrapper{
+    width: 100%;
+}
+.Notation button{
+    transition: .1s;
+}
+.Notation button:hover{
+    transform: scale(1.03);
+    cursor: pointer;
 }

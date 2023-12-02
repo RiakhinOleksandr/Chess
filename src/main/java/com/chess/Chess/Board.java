@@ -205,7 +205,7 @@ public class Board {
                     clockBlack.start();
                     clockWhite.stop();
                 }
-
+                votedForDraw.clear();
                 return true;
             } catch (Exception e) {
                 // Block of code to handle errors
@@ -315,7 +315,7 @@ public class Board {
         } else if (type.equals("Draw")) {
             if (votedForDraw.toArray().length == 0) {
                 votedForDraw.add(player);
-                return "Opponent offers a draw";
+                return player + " offers a draw";
             } else if (votedForDraw.toArray().length == 1 && !votedForDraw.get(0).equals(player)) {
                 votedForDraw.add(player);
                 this.gameEnded = true;

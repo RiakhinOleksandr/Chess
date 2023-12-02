@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <title>Display Array</title>
+    <title>Chess</title>
 </head>
 
 <body>
@@ -24,8 +24,10 @@
                     <img src="/img/player.png" />
                 </div>
             </div>
-            <h1 id="WinInfo"></h1>
-            <button id="FindNewGame" onclick="ReloadPage()">Find New Game</button>
+            <div class="WinInfoWrapper">
+                <h1 id="WinInfo"></h1>
+                <button id="FindNewGame" onclick="ReloadPage()">Find New Game</button>
+            </div>
             <div class="PlayerInfo">
                 <div class="PlayerAvatar">
                     <h2 id="WhiteName"></h2>
@@ -44,8 +46,8 @@
                         <div id="NotationRight"></div>
                     </div>
                     <div>
-                        <button onclick="Resign('Draw')"><img src="/img/hands.png" alt="Hands"/></button>
-                        <button onclick="Resign('Resign')"><img src="/img/flag.png" alt="Flag"/></button>
+                        <button onclick="Resign('Draw')" title="Vote for draw"><img src="/img/hands.png" alt="Hands"/></button>
+                        <button onclick="Resign('Resign')" title="Resign"><img src="/img/flag.png" alt="Flag"/></button>
                     </div>
                 </div>
             </div>
