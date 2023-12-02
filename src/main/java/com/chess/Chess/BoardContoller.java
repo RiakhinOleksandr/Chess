@@ -48,8 +48,9 @@ public class BoardContoller {
         if(!board.getGameEnded() && board.getPlayers()[0] != null && board.getPlayers()[1] != null && board.Move(message.getSender(), result[0], result[1], result[2], result[3])){
                 if((result[2] == 0 || result[2] == 7) && board.getFigure(result[2],result[3]).get_name().equals("Pawn") ){
                     Pawn temp = (Pawn) board.getFigure(result[2], result[3]);
+                    Figure figure = board.position[result[2]][result[3]];
                     temp.promote(board.getFiguresOnBoard(), result[2], result[3], pos[4]);
-                    board.notate_promotion(result[0], result[1], result[2], result[3], pos[4]);
+                    board.notate_promotion(result[0], result[1], result[2], result[3], pos[4], figure);
                 }
                 message.setBoard(board.getFiguresOnBoard());
                 message.setNotation(board.getNotation());

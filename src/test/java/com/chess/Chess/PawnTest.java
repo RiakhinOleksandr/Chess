@@ -1,7 +1,6 @@
 package com.chess.Chess;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.util.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Assertions;
 import java.util.ArrayList;
@@ -53,6 +52,19 @@ public class PawnTest {
     }
 
     @Test
+    public void check_promotion(){
+        position[6][3] = new Pawn(6,3,true,false);
+        position[6][2] = new Pawn(6,2,true,false);
+        position[1][0] = new Pawn(1,0,false,false);
+        ((Pawn)position[6][3]).promote(position, 7, 3, "Bishop");
+        ((Pawn)position[6][2]).promote(position, 7, 2, "Queen");
+        ((Pawn)position[1][0]).promote(position, 0, 0, "Knight");
+        Assertions.assertEquals(position[7][2].get_name(), "Queen");
+        Assertions.assertEquals(position[7][3].get_name(), "Bishop");
+        Assertions.assertEquals(position[0][0].get_name(), "Knight");
+    }
+
+    @Test
     public void check_move_possible() {
         position[1][1] = new Pawn(1, 1, true, true);
         position[1][2] = new Pawn(1, 2, true, true);
@@ -60,6 +72,20 @@ public class PawnTest {
         Assertions.assertFalse(position[1][1].move_is_possible(position, 3, 1));
         position[1][2].move(position, 2, 2);
         Assertions.assertTrue(position[1][1].move_is_possible(position, 3, 1));
+    }
+
+    @Test
+    public void check_illegal_moves(){
+        position[3][3] = new Pawn(3,3,true,false);
+        position[5][1] = new Pawn(5,1,false,false);
+        position[4][1] = new Pawn(4,1,true,false);
+        position[3][3].move(position, 5, 3);
+        position[5][1].move(position, 4, 2);
+        position[5][1].move(position, 4, 1);
+        Assertions.assertNull(position[4][2]);
+        Assertions.assertNull(position[5][3]);
+        Assertions.assertEquals(position[5][1].get_name(), "Pawn");
+        Assertions.assertEquals(position[4][1].is_white(), true);
     }
 
     @Test
