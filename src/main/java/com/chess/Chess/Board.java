@@ -305,9 +305,9 @@ public class Board {
         if(player.equals(playerWhite) || player.equals(playerBlack)) {
             if (type.equals("Time")) {
                 if (player.equals(playerWhite)) {
-                    this.winInfo = "Winner: Black Type: time is over";
+                    this.winInfo = "Winner: Black\nType: time is over";
                 } else {
-                    this.winInfo = "Winner: White Type: time is over";
+                    this.winInfo = "Winner: White\nType: time is over";
                 }
                 saveGameToFile("game.txt");
                 this.gameEnded = true;
@@ -336,15 +336,15 @@ public class Board {
                         color = "Black";
                     }
                     if (this.isKingInCheck(this.playerWhiteTurn)) {
-                        this.winInfo = "Winner: " + color + " Type: checkmated";
+                        this.winInfo = "Winner: " + color + "\nType: checkmated";
                     } else {
-                        this.winInfo = "Winner: " + color + " Type: stalemated";
+                        this.winInfo = "Winner: " + color + "\nType: stalemated";
                     }
                 } else if (type.equals("Resign")) {
                     if (player.equals(playerWhite)) {
                         color = "Black";
                     }
-                    this.winInfo = "Winner: " + color + " Type: Resign";
+                    this.winInfo = "Winner: " + color + "\nType: Resign";
                 }
                 saveGameToFile("game.txt");
                 return winInfo;
