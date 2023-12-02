@@ -20,6 +20,8 @@ public class Board {
     private final ArrayList<String> notation = new ArrayList<>();
     boolean playerWhiteTurn = true;
     private final char[] letters = { 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a' };
+    private Clock clockWhite = null;
+    private Clock clockBlack = null;
 
     public Board() {
         this.position[0][0] = new Rook(0, 0, true, true);
@@ -80,12 +82,17 @@ public class Board {
         return false;
     }
 
-    // R̶e̶t̶u̶r̶n̶s̶ ̶t̶r̶u̶e̶ ̶i̶f̶ ̶a̶ ̶p̶l̶a̶y̶e̶r̶,̶ ̶w̶h̶o̶s̶e̶ ̶c̶o̶l̶o̶r̶ ̶i̶s̶ ̶t̶h̶e̶ ̶p̶a̶r̶a̶m̶e̶t̶e̶r̶,̶ ̶i̶s̶ ̶c̶h̶e̶c̶k̶m̶a̶t̶e̶d̶,̶ ̶f̶a̶l̶s̶e̶
+    // R̶e̶t̶u̶r̶n̶s̶ ̶t̶r̶u̶e̶ ̶i̶f̶ ̶a̶ ̶p̶l̶a̶y̶e̶r̶,̶ ̶w̶h̶o̶s̶e̶ ̶c̶o̶l̶o̶r̶
+    // ̶i̶s̶ ̶t̶h̶e̶ ̶p̶a̶r̶a̶m̶e̶t̶e̶r̶,̶ ̶i̶s̶ ̶c̶h̶e̶c̶k̶m̶a̶t̶e̶d̶,̶ ̶f̶a̶l̶s̶e̶
     // i̶f̶ ̶s̶t̶a̶l̶e̶m̶a̶t̶e̶d̶.̶
-    // S̶h̶o̶u̶l̶d̶ ̶o̶n̶l̶y̶ ̶b̶e̶ ̶c̶a̶l̶l̶e̶d̶ ̶i̶f̶ ̶(̶i̶s̶A̶n̶y̶M̶o̶v̶e̶P̶o̶s̶s̶i̶b̶l̶e̶ ̶=̶=̶ ̶f̶a̶l̶s̶e̶)̶
-    // UPDATE: renamed isCheckmate(bool color) -> isKingInCheck(bool color), new is more clear about what method does;
-    // Returns true, if the King piece of a player, whose color is the parameter is in check, false otherwise.
-    // When called under the condition of (isAnyMovePossible == false), indicates checkmate if true,
+    // S̶h̶o̶u̶l̶d̶ ̶o̶n̶l̶y̶ ̶b̶e̶ ̶c̶a̶l̶l̶e̶d̶ ̶i̶f̶
+    // ̶(̶i̶s̶A̶n̶y̶M̶o̶v̶e̶P̶o̶s̶s̶i̶b̶l̶e̶ ̶=̶=̶ ̶f̶a̶l̶s̶e̶)̶
+    // UPDATE: renamed isCheckmate(bool color) -> isKingInCheck(bool color), new is
+    // more clear about what method does;
+    // Returns true, if the King piece of a player, whose color is the parameter is
+    // in check, false otherwise.
+    // When called under the condition of (isAnyMovePossible == false), indicates
+    // checkmate if true,
     // stalemate if false.
     public boolean isKingInCheck(boolean color) {
         Figure[][] currPosition = this.position;
@@ -113,18 +120,18 @@ public class Board {
         }
     }
 
-    public void notate_promotion(int row, int column, int new_row, int new_column, String name){
+    public void notate_promotion(int row, int column, int new_row, int new_column, String name) {
         String moveNotation = "";
-        moveNotation += "" + letters[column]+(row+1);
+        moveNotation += "" + letters[column] + (row + 1);
         if (this.position[new_row][new_column] != null) {
             moveNotation += "x";
         } else {
             moveNotation += "-";
         }
         moveNotation += "" + letters[new_column] + (new_row + 1);
-        if(Objects.equals(name, "Knight")){
-             moveNotation += 'N';
-        } else{
+        if (Objects.equals(name, "Knight")) {
+            moveNotation += 'N';
+        } else {
             moveNotation += name.charAt(0);
         }
         if (isKingInCheck(playerWhiteTurn)) {
@@ -151,7 +158,7 @@ public class Board {
 
                 String moveNotation = "";
 
-                if(!(Objects.equals(movedFigure.get_name(), "Pawn") && (posRow == 0 || posRow == 7))){
+                if (!(Objects.equals(movedFigure.get_name(), "Pawn") && (posRow == 0 || posRow == 7))) {
                     // Handling castling
                     if (Objects.equals(movedFigure.get_name(), "King") && Math.abs(posColumn - figureColumn) == 2) {
                         if (posColumn > figureColumn) {
@@ -162,12 +169,12 @@ public class Board {
                     } else {
 
                         if (Objects.equals(movedFigure.get_name(), "Pawn")) {
-                            moveNotation += "" + letters[figureColumn]+(figureRow+1);
+                            moveNotation += "" + letters[figureColumn] + (figureRow + 1);
                         } else if (Objects.equals(movedFigure.get_name(), "Knight")) {
-                            moveNotation += "N"+letters[figureColumn]+(figureRow+1);
+                            moveNotation += "N" + letters[figureColumn] + (figureRow + 1);
                         } else {
                             moveNotation += "" + movedFigure.get_name().charAt(0) + letters[figureColumn] +
-                                    (figureRow+1);
+                                    (figureRow + 1);
                         }
 
                         if (squareToBeOccupied != null) {
@@ -189,7 +196,15 @@ public class Board {
                     }
                     this.notation.add(moveNotation);
                 }
-                // Time Update
+
+                if (this.playerWhiteTurn) {
+                    clockWhite.start();
+                    clockBlack.stop();
+                } else {
+                    clockBlack.start();
+                    clockWhite.stop();
+                }
+
                 return true;
             } catch (Exception e) {
                 // Block of code to handle errors
@@ -210,7 +225,7 @@ public class Board {
 
             int i = 0;
             for (String move : this.notation) {
-                if(i < 18){
+                if (i < 18) {
                     move = ' ' + move;
                 }
                 if (i % 2 == 0) {
@@ -224,7 +239,7 @@ public class Board {
                 writer.write(move);
                 i++;
             }
-            if (i % 2 == 1){
+            if (i % 2 == 1) {
                 writer.write("\n");
             }
             writer.write("----------------------\n");
@@ -270,9 +285,10 @@ public class Board {
     public void setPlayer(String player) {
         if (this.playerWhite == null) {
             this.playerWhite = player;
+            this.clockWhite = new Clock(600);
         } else if (this.playerBlack == null && !Objects.equals(player, this.playerWhite)) {
             this.playerBlack = player;
-            // Time Start
+            this.clockBlack = new Clock(600);
         }
     }
 
@@ -285,11 +301,11 @@ public class Board {
     }
 
     public String SetGameEnded(String type, String player) {
-        if(type.equals("Draw")){
-            if(votedForDraw.toArray().length == 0){
+        if (type.equals("Draw")) {
+            if (votedForDraw.toArray().length == 0) {
                 votedForDraw.add(player);
                 return "Opponent offers a draw";
-            }else if(votedForDraw.toArray().length == 1 && !votedForDraw.get(0).equals(player)) {
+            } else if (votedForDraw.toArray().length == 1 && !votedForDraw.get(0).equals(player)) {
                 votedForDraw.add(player);
                 this.gameEnded = true;
                 this.winInfo = "Draw";
@@ -299,20 +315,20 @@ public class Board {
         } else {
             this.gameEnded = true;
             String color = "White";
-            if(type.equals("NoAnyMovePossible")){
-                if(this.playerWhiteTurn){
+            if (type.equals("NoAnyMovePossible")) {
+                if (this.playerWhiteTurn) {
                     color = "Black";
                 }
-                if(this.isKingInCheck(this.playerWhiteTurn)) {
+                if (this.isKingInCheck(this.playerWhiteTurn)) {
                     this.winInfo = "Winner: " + color + " Type: checkmated";
-                }else {
+                } else {
                     this.winInfo = "Winner: " + color + " Type: stalemated";
                 }
-            }else if(type.equals("Resign")){
-                if(player.equals(playerWhite)){
+            } else if (type.equals("Resign")) {
+                if (player.equals(playerWhite)) {
                     color = "Black";
                 }
-                this.winInfo = "Winner: " + color +" Type: Resign";
+                this.winInfo = "Winner: " + color + " Type: Resign";
             }
             saveGameToFile("game.txt");
             return winInfo;
@@ -323,6 +339,7 @@ public class Board {
     public boolean getGameEnded() {
         return this.gameEnded;
     }
+
     public String getWinInfo() {
         return this.winInfo;
     }
