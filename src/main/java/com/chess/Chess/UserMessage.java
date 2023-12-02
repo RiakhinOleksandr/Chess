@@ -31,7 +31,7 @@ public class UserMessage {
         return type;
     }
 
-    public ArrayList<int[]> getposibleMoves() {
+    public ArrayList<int[]> getPosibleMoves() {
         return posibleMoves;
     }
 

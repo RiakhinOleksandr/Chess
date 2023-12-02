@@ -223,7 +223,7 @@ public class Pawn extends Figure {
             } catch (ImpossibleMove e) {
             }
         }
-        curr_position[row][column] = null;
+        //curr_position[row][column] = null;
     }
 
     @Override

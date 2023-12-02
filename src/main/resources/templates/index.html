@@ -1,114 +1,142 @@
 <!DOCTYPE html>
-<html lang="eu" xmlns:th="http://www.thymeleaf.org" >
+<html lang="eu" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
     <title>Display Array</title>
 </head>
+
 <body>
-<div id="Login">
-    <input type="text" id="name" placeholder="Name" />
-
-    <button onclick="connect()" >Під'єднатись</button>
-</div>
-<div id="PawnTransform">
-
-</div>
-<div class="MainPage">
-    <div id="PlayerList"></div>
-    <div class="PageMiddle">
-        <div class="ChessBoardSides">
-            <div class="Notation">
-                <div id="NotationLeft"></div>
-                <div id="NotationRight"></div>
-            </div>
-        </div>
-        <table id="WhiteBoard">
-            <thead>
-            <tr>
-                <td></td>
-                <td>a</td>
-                <td>b</td>
-                <td>c</td>
-                <td>d</td>
-                <td>e</td>
-                <td>f</td>
-                <td>g</td>
-                <td>h</td>
-                <td></td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="row, i: ${board}">
-                <td th:text="${8 - i.index}" class="TableSides"></td>
-                <td th:each="value, j: ${row}" th:id="${'b' + (7 - i.index) + '_' + (7 - j.index)}">
-
-                </td>
-                <td th:text="${8 - i.index}" class="TableSides"></td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>a</td>
-                <td>b</td>
-                <td>c</td>
-                <td>d</td>
-                <td>e</td>
-                <td>f</td>
-                <td>g</td>
-                <td>h</td>
-                <td></td>
-            </tr>
-            </tfoot>
-        </table>
-
-        <table id="BlackBoard">
-            <thead>
-            <tr>
-                <td></td>
-                <td>h</td>
-                <td>g</td>
-                <td>f</td>
-                <td>e</td>
-                <td>d</td>
-                <td>c</td>
-                <td>b</td>
-                <td>a</td>
-                <td></td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="row, i: ${board}">
-                <td th:text="${(i.index + 1)}" class="TableSides"></td>
-                <td th:each="value, j: ${row}" th:id="${'b' + (i.index) + '_' + j.index}">
-
-                </td>
-                <td th:text="${(i.index + 1)}" class="TableSides"></td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td></td>
-                <td>h</td>
-                <td>g</td>
-                <td>f</td>
-                <td>e</td>
-                <td>d</td>
-                <td>c</td>
-                <td>b</td>
-                <td>a</td>
-                <td></td>
-            </tr>
-            </tfoot>
-        </table>
-        <div class="ChessBoardSides">
-
+    <div id="Login">
+        <div class="LoginInputWrapper">
+            <h1>LOGIN</h1>
+            <input type="text" id="name" placeholder="Name" />
+            <button onclick="connect()">Connect</button>
         </div>
     </div>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-<script src="/main.js"></script>
+    <div id="MainPage">
+        <div id="Info">
+            <div class="PlayerInfo">
+                <div class="Timer" id="BlackTimer">00:00</div>
+                <div class="PlayerAvatar">
+                    <h2 id="BlackName"></h2>
+                    <img src="/img/player.png" />
+                </div>
+            </div>
+            <h1 id="WinInfo"></h1>
+            <div class="PlayerInfo">
+                <div class="PlayerAvatar">
+                    <h2 id="WhiteName"></h2>
+                    <img src="/img/player.png" />
+                </div>
+                <div class="Timer" id="WhiteTimer">00:00</div>
+            </div>
+        </div>
+
+        <div class="PageMiddle">
+            <div class="ChessBoardSides">
+                <div id="Panel">
+                    <div class="Notation">
+                        <div id="NotationNum"></div>
+                        <div id="NotationLeft"></div>
+                        <div id="NotationRight"></div>
+                    </div>
+                    <div>
+                        <button onclick="Resign('Draw')"><img src="/img/hands.png" alt="Hands"/></button>
+                        <button onclick="Resign('Resign')"><img src="/img/flag.png" alt="Flag"/></button>
+                    </div>
+                </div>
+            </div>
+            <table id="WhiteBoard">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td>a</td>
+                        <td>b</td>
+                        <td>c</td>
+                        <td>d</td>
+                        <td>e</td>
+                        <td>f</td>
+                        <td>g</td>
+                        <td>h</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="row, i: ${board}">
+                        <td th:text="${8 - i.index}" class="TableSides"></td>
+                        <td th:each="value, j: ${row}" th:id="${'b' + (7 - i.index) + '_' + (7 - j.index)}">
+
+                        </td>
+                        <td th:text="${8 - i.index}" class="TableSides"></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td>a</td>
+                        <td>b</td>
+                        <td>c</td>
+                        <td>d</td>
+                        <td>e</td>
+                        <td>f</td>
+                        <td>g</td>
+                        <td>h</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <table id="BlackBoard">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td>h</td>
+                        <td>g</td>
+                        <td>f</td>
+                        <td>e</td>
+                        <td>d</td>
+                        <td>c</td>
+                        <td>b</td>
+                        <td>a</td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="row, i: ${board}">
+                        <td th:text="${(i.index + 1)}" class="TableSides"></td>
+                        <td th:each="value, j: ${row}" th:id="${'b' + (i.index) + '_' + j.index}">
+
+                        </td>
+                        <td th:text="${(i.index + 1)}" class="TableSides"></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td>h</td>
+                        <td>g</td>
+                        <td>f</td>
+                        <td>e</td>
+                        <td>d</td>
+                        <td>c</td>
+                        <td>b</td>
+                        <td>a</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="ChessBoardSides">
+                <div id="PawnTransform">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="/main.js"></script>
 </body>
+
 </html>
