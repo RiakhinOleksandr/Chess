@@ -303,4 +303,16 @@ tfoot td, thead td{
     font-size: 32px;
     width: 100%;
     text-align: center;
+    z-index: 10;
+}
+#FindNewGame{
+    z-index: 10;
+    width: 220px;
+    background-color: #e8e8e8;
+    height: 48px;
+    font-size: 24px;
+    border-radius: 20px;
+    border: 1px solid black;
+    margin: 0 auto;
+    display: none;
 }

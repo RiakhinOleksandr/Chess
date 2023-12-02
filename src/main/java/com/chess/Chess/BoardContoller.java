@@ -3,14 +3,21 @@ package com.chess.Chess;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SendToUser;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
+import java.util.Arrays;
 
 @Controller
+@EnableScheduling
 public class BoardContoller {
     Board board = new Board();
+
+
     @MessageMapping("/game.start")
     @SendTo("/topic/public")
     public UserMessage register(@Payload UserMessage message) {
@@ -69,12 +76,32 @@ public class BoardContoller {
     @MessageMapping("/game.EndGame")
     @SendTo("/topic/public")
     public UserMessage EndGame(@Payload UserMessage message) {
-        if(message.getContent().equals("Resign")){
-            message.setType(board.SetGameEnded("Resign", message.getSender()));
-        }else if(message.getContent().equals("Draw")){
-            message.setType(board.SetGameEnded("Draw", message.getSender()));
+        if(!board.getGameEnded()) {
+            if (message.getContent().equals("Resign")) {
+                message.setType(board.SetGameEnded("Resign", message.getSender()));
+            } else if (message.getContent().equals("Draw")) {
+                message.setType(board.SetGameEnded("Draw", message.getSender()));
+            }
         }
+        message.setPlayers(board.getPlayers());
+        message.setNotation(board.getNotation());
         message.setBoard(board.getFiguresOnBoard());
+        if(board.getGameEnded()){
+            board = new Board();
+        }
         return message;
+    }
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public BoardContoller(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
+    @Scheduled(fixedRate = 1000) // Send a message every 5 seconds
+    public void sendPeriodicMessages() {
+        UserMessage message = new UserMessage();
+        message.setType("Timer");
+
+        message.setContent(String.valueOf(board.getTimesLeft()[0]) + " " + String.valueOf(board.getTimesLeft()[1]));
+        messagingTemplate.convertAndSend("/topic/public", message);
     }
 }

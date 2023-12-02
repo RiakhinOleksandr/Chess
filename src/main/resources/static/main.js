@@ -11,11 +11,12 @@ var lastPressedFigureId = null;
 const transformBoard = document.getElementById("PawnTransform");
 
 var isWhite = null;
+
 function connect() {
     username = document.querySelector('#name').value.trim();
 
     if(username) {
-        var socket = new SockJS('/websocket');
+        socket = new SockJS('/websocket');
         stompClient = Stomp.over(socket);
 
         stompClient.connect({}, onConnected, onError);
@@ -169,7 +170,7 @@ function boardDraw(array){
             document.getElementById("NotationRight").appendChild(ul);
         }
     }
-    console.log(array.type.toLowerCase().includes("draw"),array.type.toLowerCase() )
+
     if(!array.type.includes("Winner") && !array.type.toLowerCase().includes("draw")) {
         document.getElementById("WhiteTimer").style.opacity = "1";
         document.getElementById("BlackTimer").style.opacity = "1";
@@ -183,8 +184,11 @@ function boardDraw(array){
         document.getElementById("WhiteName").innerHTML =  array.players[0];
         document.getElementById("BlackName").innerHTML =  array.players[1];
     }else {
-        gameEnded = true;
-        //if(array.type.includes("true")) {
+        if(!array.type.includes("Opponent offers")) {
+            gameEnded = true;
+            document.getElementById("FindNewGame").style.display = "block";
+            socket.close();
+        }
         document.getElementById("WinInfo").innerHTML = array.type;
     }
     if(lastPressedFigureId) {
@@ -193,6 +197,21 @@ function boardDraw(array){
         GetMoves(temp);
     }
 }
+
+function secondsToTimerFormat(seconds) {
+    var minutes = Math.floor(seconds / 60);
+    var remainingSeconds = seconds % 60;
+
+    if (remainingSeconds < 10) {
+        remainingSeconds = "0" + remainingSeconds;
+    }
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+
+    return minutes + ":" + remainingSeconds;
+}
+
 function onMessageReceived(data) {
     let array = JSON.parse(data.body);
     console.log(array)
@@ -224,6 +243,11 @@ function onMessageReceived(data) {
         possibleMoves = array.posibleMoves;
         displayPossibleMoves();
     }
+    if(array.type === "Timer") {
+        const times = array.content.split(' ');
+        document.getElementById("WhiteTimer").innerHTML = secondsToTimerFormat(parseInt(times[0]));
+        document.getElementById("BlackTimer").innerHTML =  secondsToTimerFormat(parseInt(times[1]));
+    }
 }
 
 function Resign(text) {
@@ -235,4 +259,7 @@ function Resign(text) {
         lastPressedFigureId = null;
         stompClient.send("/app/game.EndGame", {}, JSON.stringify(gameMessage));
     }
+}
+function ReloadPage(){
+    location.reload();
 }

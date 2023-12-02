@@ -22,6 +22,7 @@ public class Board {
     private final char[] letters = { 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a' };
     private Clock clockWhite = null;
     private Clock clockBlack = null;
+    private static int  time = 600;
 
     public Board() {
         this.position[0][0] = new Rook(0, 0, true, true);
@@ -285,10 +286,10 @@ public class Board {
     public void setPlayer(String player) {
         if (this.playerWhite == null) {
             this.playerWhite = player;
-            this.clockWhite = new Clock(600);
+            this.clockWhite = new Clock(time);
         } else if (this.playerBlack == null && !Objects.equals(player, this.playerWhite)) {
             this.playerBlack = player;
-            this.clockBlack = new Clock(600);
+            this.clockBlack = new Clock(time);
         }
     }
 
@@ -308,12 +309,16 @@ public class Board {
             } else if (votedForDraw.toArray().length == 1 && !votedForDraw.get(0).equals(player)) {
                 votedForDraw.add(player);
                 this.gameEnded = true;
+                this.clockWhite.stop();
+                this.clockBlack.stop();
                 this.winInfo = "Draw";
                 saveGameToFile("game.txt");
                 return "Draw";
             }
         } else {
             this.gameEnded = true;
+            this.clockWhite.stop();
+            this.clockBlack.stop();
             String color = "White";
             if (type.equals("NoAnyMovePossible")) {
                 if (this.playerWhiteTurn) {
@@ -342,5 +347,13 @@ public class Board {
 
     public String getWinInfo() {
         return this.winInfo;
+    }
+
+    public  int[] getTimesLeft(){
+        if(this.clockBlack != null && this.clockWhite !=null) {
+            return new int[]{this.clockWhite.getTimeLeft(), this.clockBlack.getTimeLeft()};
+        }else {
+            return new int[]{time,time};
+        }
     }
 }
