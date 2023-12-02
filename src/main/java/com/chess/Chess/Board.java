@@ -22,7 +22,7 @@ public class Board {
     private final char[] letters = { 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a' };
     private Clock clockWhite = null;
     private Clock clockBlack = null;
-    private static int time = 4;
+    private static int time = 601;
 
     public Board() {
         this.position[0][0] = new Rook(0, 0, true, true);
