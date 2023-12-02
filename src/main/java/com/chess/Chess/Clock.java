@@ -12,17 +12,11 @@ public class Clock {
   Timer timer = new Timer(1000, new ActionListener() {
 
     public void actionPerformed(ActionEvent e) {
-
-      try {
-        if (timeLeft != 0) {
-          elapsedTime += 1000;
-          timeLeft = wholeTime - (elapsedTime / 1000);
-        } else {
-          timer.stop();
-          throw new TimeIsOver();
-        }
-      } catch (TimeIsOver ex) {
-        System.out.println(ex.getMessage());
+      if (timeLeft != 0) {
+        elapsedTime += 1000;
+        timeLeft = wholeTime - (elapsedTime / 1000);
+      } else {
+        timer.stop();
       }
     }
   });
@@ -42,11 +36,5 @@ public class Clock {
 
   public int getTimeLeft() {
     return this.timeLeft;
-  }
-}
-
-class TimeIsOver extends Exception {
-  public TimeIsOver() {
-    super("time is over");
   }
 }
