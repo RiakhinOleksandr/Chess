@@ -258,7 +258,7 @@ public class Board {
         }
     }
 
-    private String getUniqueFileName(String folderName, String fileName) {
+    public String getUniqueFileName(String folderName, String fileName) {
         createDirectoryIfNotExists(folderName);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
