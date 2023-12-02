@@ -127,4 +127,16 @@ public class BoardTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    void setGameEndedTest() {
+        board.SetGameEnded("NoAnyMovePossible", "player1");
+        Assertions.assertTrue(board.getGameEnded());
+    }
+
+    @Test
+    void setGameEndedDrawTest() {
+        Assertions.assertEquals("Opponent offers a draw", board.SetGameEnded("Draw", "player1"));
+        Assertions.assertEquals("Draw", board.SetGameEnded("Draw", "player2"));
+    }
 }
