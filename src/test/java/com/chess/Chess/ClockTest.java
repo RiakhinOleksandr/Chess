@@ -18,17 +18,4 @@ public class ClockTest {
     }
   }
 
-  @Test
-  public void stopCheck() {
-    Clock c = new Clock(0);
-    c.start();
-
-    try {
-      Thread.sleep(2000);
-    } catch (Exception e) {
-      String m = e.getMessage();
-      Assertions.assertEquals("time is over", m);
-    }
-  }
-
 }

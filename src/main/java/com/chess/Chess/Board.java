@@ -22,7 +22,7 @@ public class Board {
     private final char[] letters = { 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a' };
     private Clock clockWhite = null;
     private Clock clockBlack = null;
-    private static int  time = 600;
+    private static int time = 601;
 
     public Board() {
         this.position[0][0] = new Rook(0, 0, true, true);
@@ -121,9 +121,9 @@ public class Board {
         }
     }
 
-    public void notate_promotion(int row, int column, int new_row, int new_column, String name, Figure figure){
+    public void notate_promotion(int row, int column, int new_row, int new_column, String name, Figure figure) {
         String moveNotation = "";
-        moveNotation += "" + letters[column]+(row+1);
+        moveNotation += "" + letters[column] + (row + 1);
         if (figure != null) {
             moveNotation += "x";
         } else {
@@ -302,7 +302,17 @@ public class Board {
     }
 
     public String SetGameEnded(String type, String player) {
-        if (type.equals("Draw")) {
+        if (type.equals("Time")) {
+            if (player.equals(playerWhite)) {
+                this.winInfo = "Winner: Black Type: time is over";
+            } else {
+                this.winInfo = "Winner: White Type: time is over";
+            }
+            saveGameToFile("game.txt");
+            this.gameEnded = true;
+
+            return this.winInfo;
+        } else if (type.equals("Draw")) {
             if (votedForDraw.toArray().length == 0) {
                 votedForDraw.add(player);
                 return "Opponent offers a draw";
@@ -349,11 +359,19 @@ public class Board {
         return this.winInfo;
     }
 
-    public  int[] getTimesLeft(){
-        if(this.clockBlack != null && this.clockWhite !=null) {
-            return new int[]{this.clockWhite.getTimeLeft(), this.clockBlack.getTimeLeft()};
-        }else {
-            return new int[]{time,time};
+    public Clock getWhiteClock() {
+        return clockWhite;
+    }
+
+    public Clock getBlackClock() {
+        return clockBlack;
+    }
+
+    public int[] getTimesLeft() {
+        if (this.clockBlack != null && this.clockWhite != null) {
+            return new int[] { this.clockWhite.getTimeLeft(), this.clockBlack.getTimeLeft() };
+        } else {
+            return new int[] { time, time };
         }
     }
 }
