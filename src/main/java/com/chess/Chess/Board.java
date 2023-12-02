@@ -113,10 +113,10 @@ public class Board {
         }
     }
 
-    public void notate_promotion(int row, int column, int new_row, int new_column, String name){
+    public void notate_promotion(int row, int column, int new_row, int new_column, String name, Figure figure){
         String moveNotation = "";
         moveNotation += "" + letters[column]+(row+1);
-        if (this.position[new_row][new_column] != null) {
+        if (figure != null) {
             moveNotation += "x";
         } else {
             moveNotation += "-";
