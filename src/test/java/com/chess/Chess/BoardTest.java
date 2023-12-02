@@ -4,6 +4,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 //import java.util.Arrays;
 
 public class BoardTest {
@@ -103,5 +108,23 @@ public class BoardTest {
         position[7][4].move(position, 3, 0);
 
         Assertions.assertTrue(board.isKingInCheck(true));
+    }
+
+    @Test
+    void saveGameToFileTest() {
+        board.Move("player1", 1, 1, 3, 1);
+        board.Move("player2", 6, 3, 4, 3);
+        board.Move("player1", 1, 2, 2, 2);
+        board.Move("player2", 7, 4, 3, 0);
+
+        String fileName = "test_game.txt";
+        board.saveGameToFile(fileName);
+        fileName = board.getUniqueFileName("games", fileName);
+        Assertions.assertTrue(Files.exists(Paths.get(fileName)));
+        try {
+            Files.deleteIfExists(Paths.get(fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
