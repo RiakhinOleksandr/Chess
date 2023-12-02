@@ -7,7 +7,7 @@ var deleted = false;
 var possibleMoves = null;
 var gameEnded = false;
 
-var pawnMoveData = "";
+var lastPressedFigureId = null;
 const transformBoard = document.getElementById("PawnTransform");
 
 var isWhite = null;
@@ -20,10 +20,8 @@ function connect() {
 
         stompClient.connect({}, onConnected, onError);
     }
-    document.getElementById("Login").hidden = true;
 }
 
-var lastPressedFigureId = null;
 
 function deleteCircles(){
     const circle = document.querySelectorAll('.MoveCircle');
@@ -34,9 +32,9 @@ function deleteCircles(){
 deleteCircles();
 
 function deleteFigures(){
-    const circle = document.querySelectorAll('.Figure ');
-    circle.forEach(circle => {
-        circle.remove();
+    const figures = document.querySelectorAll('.Figure ');
+    figures.forEach(figure => {
+        figure.remove();
     });
 }
 deleteFigures();
@@ -66,9 +64,14 @@ function onError(error) {
 
 function Move(event) {
     deleteCircles();
-
+    if(lastPressedFigureId) {
+        document.getElementById(lastPressedFigureId).style.background = "none";
+    }
     if(document.getElementById(lastPressedFigureId).getElementsByTagName("img")[0].src.includes("Pawn") && (event.replaceAll('c', '')[0] === "0" || event.replaceAll('c', '')[0] === "7") && event.length<=4){
-        pawnMoveData = lastPressedFigureId +"_"+ event.replaceAll('c', '');
+        const figures = transformBoard.querySelectorAll('.Figure ');
+        figures.forEach(figure => {
+            figure.remove();
+        });
         for(const name of ['Queen','Rook','Bishop','Knight']) {
             let button = document.createElement('button');
             button.classList.add("Figure");
@@ -86,9 +89,10 @@ function Move(event) {
             sender: username,
             content: lastPressedFigureId +"_"+ event.replaceAll('c', ''),
         };
-
+        lastPressedFigureId = null;
         stompClient.send("/app/game.Move", {}, JSON.stringify(gameMessage));
     }
+
 }
 
 function GetMoves(event) {
@@ -102,12 +106,20 @@ function GetMoves(event) {
 
                 stompClient.send("/app/game.getMoves", {}, JSON.stringify(gameMessage));
             }
+            if(lastPressedFigureId) {
+                document.getElementById(lastPressedFigureId).style.background = "none";
+            }
             lastPressedFigureId = event;
+            document.getElementById(event).style.background = "rgba(93, 174, 255, 0.45)";
         } else {
             if (document.querySelectorAll('.MoveCircle').length > 0) {
                 deleteCircles();
+                if(lastPressedFigureId) {
+                    document.getElementById(lastPressedFigureId).style.background = "none";
+                }
             } else {
-                displayPossibleMoves()
+                displayPossibleMoves();
+                document.getElementById(event).style.background = "rgba(93, 174, 255, 0.45)";
             }
         }
     }
@@ -119,9 +131,8 @@ function displayPossibleMoves(){
         button.classList.add("MoveCircle");
         button.id = "c" + pos[0] + "_" + pos[1];
         button.onclick = function() { Move(this.id); };
-        let img = document.createElement('img');
-        img.src = '/img/circle.png';
-        button.appendChild(img);
+        let div = document.createElement('div');
+        button.appendChild(div);
         document.getElementById("b" + pos[0] + "_" + pos[1]).appendChild(button);
     }
 }
@@ -149,20 +160,37 @@ function boardDraw(array){
         ul.innerHTML = array.notation[i];
         ul.classList.add("NotationUl");
         if(i%2 === 0) {
+            let numUl = document.createElement('ul');
+            numUl.innerHTML = "" + (i/2+1);
+            numUl.classList.add("NotationUl");
+            document.getElementById("NotationNum").appendChild(numUl);
             document.getElementById("NotationLeft").appendChild(ul);
         }else {
             document.getElementById("NotationRight").appendChild(ul);
         }
     }
-    if(!array.type.includes("Winner")) {
-        document.getElementById("PlayerList").innerHTML = "White: " + array.players[0] + "\nBlack: " + array.players[1];
+    console.log(array.type.toLowerCase().includes("draw"),array.type.toLowerCase() )
+    if(!array.type.includes("Winner") && !array.type.toLowerCase().includes("draw")) {
+        document.getElementById("WhiteTimer").style.opacity = "1";
+        document.getElementById("BlackTimer").style.opacity = "1";
+        if(array.notation.length%2 === 0){
+            document.getElementById("BlackTimer").style.opacity = "0.4";
+        }else {
+            document.getElementById("WhiteTimer").style.opacity = "0.4";
+        }
+
+
+        document.getElementById("WhiteName").innerHTML =  array.players[0];
+        document.getElementById("BlackName").innerHTML =  array.players[1];
     }else {
         gameEnded = true;
-        if(array.type.includes("true")) {
-            document.getElementById("PlayerList").innerHTML = "Winner: " + array.players[0]+ "   Player "+ array.players[1]+"was" +array.type.split(" ")[2];
-        }else {
-            document.getElementById("PlayerList").innerHTML = "Winner: " + array.players[1]+ "   Player "+ array.players[0]+"was "+array.type.split(" ")[2];
-        }
+        //if(array.type.includes("true")) {
+        document.getElementById("WinInfo").innerHTML = array.type;
+    }
+    if(lastPressedFigureId) {
+        let temp = lastPressedFigureId;
+        lastPressedFigureId = null;
+        GetMoves(temp);
     }
 }
 function onMessageReceived(data) {
@@ -171,6 +199,11 @@ function onMessageReceived(data) {
     if(!deleted) {
         if (array.players[1] === username) {
             const board = document.querySelector('#WhiteBoard');
+            document.querySelector('#Info').style.flexDirection = "column-reverse"
+            const playerInfo = document.querySelectorAll('.PlayerInfo');
+            playerInfo.forEach(player => {
+                player.style.flexDirection = "column-reverse";
+            });
             board.remove();
             deleted = true;
         } else {
@@ -178,9 +211,11 @@ function onMessageReceived(data) {
             board.remove();
             deleted = true;
         }
+        document.getElementById("Login").style.display = "none";
+        document.getElementById("MainPage").style.display = "flex";
     }
 
-    if(array.type === "BoardLoad" || array.type.includes("Winner")){
+    if(array.type === "BoardLoad" || array.type.includes("Winner") || array.type.toLowerCase().includes("draw")){
         isWhite = username === array.players[0];
         boardDraw(array);
     }
@@ -188,5 +223,16 @@ function onMessageReceived(data) {
         deleteCircles();
         possibleMoves = array.posibleMoves;
         displayPossibleMoves();
+    }
+}
+
+function Resign(text) {
+    if(stompClient) {
+        var gameMessage = {
+            sender: username,
+            content: text,
+        };
+        lastPressedFigureId = null;
+        stompClient.send("/app/game.EndGame", {}, JSON.stringify(gameMessage));
     }
 }

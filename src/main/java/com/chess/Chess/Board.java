@@ -15,6 +15,8 @@ public class Board {
     private boolean gameEnded = false;
     private String playerWhite = null;
     private String playerBlack = null;
+    private String winInfo = "";
+    private final ArrayList<String> votedForDraw = new ArrayList<>();
     private final ArrayList<String> notation = new ArrayList<>();
     boolean playerWhiteTurn = true;
     private final char[] letters = { 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a' };
@@ -222,6 +224,11 @@ public class Board {
                 writer.write(move);
                 i++;
             }
+            if (i % 2 == 1){
+                writer.write("\n");
+            }
+            writer.write("----------------------\n");
+            writer.write(this.winInfo);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -277,11 +284,46 @@ public class Board {
         return new String[] { this.playerWhite, this.playerBlack };
     }
 
-    public void SetGameEnded() {
-        this.gameEnded = true;
+    public String SetGameEnded(String type, String player) {
+        if(type.equals("Draw")){
+            if(votedForDraw.toArray().length == 0){
+                votedForDraw.add(player);
+                return "Opponent offers a draw";
+            }else if(votedForDraw.toArray().length == 1 && !votedForDraw.get(0).equals(player)) {
+                votedForDraw.add(player);
+                this.gameEnded = true;
+                this.winInfo = "Draw";
+                saveGameToFile("game.txt");
+                return "Draw";
+            }
+        } else {
+            this.gameEnded = true;
+            String color = "White";
+            if(type.equals("NoAnyMovePossible")){
+                if(this.playerWhiteTurn){
+                    color = "Black";
+                }
+                if(this.isKingInCheck(this.playerWhiteTurn)) {
+                    this.winInfo = "Winner: " + color + " Type: checkmated";
+                }else {
+                    this.winInfo = "Winner: " + color + " Type: stalemated";
+                }
+            }else if(type.equals("Resign")){
+                if(player.equals(playerWhite)){
+                    color = "Black";
+                }
+                this.winInfo = "Winner: " + color +" Type: Resign";
+            }
+            saveGameToFile("game.txt");
+            return winInfo;
+        }
+        return "None";
     }
 
     public boolean getGameEnded() {
         return this.gameEnded;
+    }
+    public String getWinInfo() {
+        return this.winInfo;
     }
 }
