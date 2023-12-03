@@ -89,6 +89,7 @@ public class BoardContoller {
     @MessageMapping("/game.EndGame")
     @SendTo("/topic/public")
     public UserMessage EndGame(@Payload UserMessage message) {
+        message.setType("None");
         if (!board.getGameEnded()) {
             if (message.getContent().equals("Resign")) {
                 message.setType(board.SetGameEnded("Resign", message.getSender()));
