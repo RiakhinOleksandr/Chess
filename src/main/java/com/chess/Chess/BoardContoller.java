@@ -9,9 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
-import java.security.Principal;
-import java.util.Arrays;
-
 @Controller
 @EnableScheduling
 public class BoardContoller {
@@ -34,7 +31,7 @@ public class BoardContoller {
 
     @MessageMapping("/game.getMoves")
     @SendToUser("/topic/private")
-    public UserMessage sendPosMoves(@Payload UserMessage message) {
+    public UserMessage SendPosMoves(@Payload UserMessage message) {
         String[] pos = message.getContent().split("_");
         int[] result = { Integer.parseInt(pos[0]), Integer.parseInt(pos[1]) };
         if (!board.getGameEnded()) {
@@ -54,13 +51,22 @@ public class BoardContoller {
         String[] pos = message.getContent().split("_");
         int[] result = { Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]),
                 Integer.parseInt(pos[3]) };
+//        if(result[0] == null){
+//            message.setType("None");
+//            return message;
+//        }
         if (!board.getGameEnded() && board.getPlayers()[0] != null && board.getPlayers()[1] != null
                 && board.Move(message.getSender(), result[0], result[1], result[2], result[3])) {
             if ((result[2] == 0 || result[2] == 7) && board.getFigure(result[2], result[3]).get_name().equals("Pawn")) {
-                Pawn temp = (Pawn) board.getFigure(result[2], result[3]);
-                Figure figure = board.position[result[2]][result[3]];
-                temp.promote(board.getFiguresOnBoard(), result[2], result[3], pos[4]);
-                board.notate_promotion(result[0], result[1], result[2], result[3], pos[4], figure);
+                if(pos.length == 5) {
+                    Pawn temp = (Pawn) board.getFigure(result[2], result[3]);
+                    Figure figure = board.position[result[2]][result[3]];
+                    temp.promote(board.getFiguresOnBoard(), result[2], result[3], pos[4]);
+                    board.notate_promotion(result[0], result[1], result[2], result[3], pos[4], figure);
+                } else {
+                    message.setType("None");
+                    return message;
+                }
             }
             message.setBoard(board.getFiguresOnBoard());
             message.setNotation(board.getNotation());
@@ -103,7 +109,7 @@ public class BoardContoller {
     }
 
     @Scheduled(fixedRate = 1000)
-    public void sendPeriodicMessages() {
+    public void SendPeriodicMessages() {
         UserMessage message = new UserMessage();
         message.setType("Timer");
 

@@ -97,6 +97,10 @@ function Move(event) {
 }
 
 function GetMoves(event) {
+    const figures = transformBoard.querySelectorAll('.Figure ');
+    figures.forEach(figure => {
+        figure.remove();
+    });
     if(!gameEnded && document.getElementById(event).getElementsByTagName("img")[0].src.includes(isWhite)) {
         if (lastPressedFigureId !== event) {
             if (stompClient) {
