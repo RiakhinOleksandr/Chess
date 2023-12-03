@@ -338,7 +338,7 @@ public class Board {
                     if (this.isKingInCheck(this.playerWhiteTurn)) {
                         this.winInfo = "Winner: " + color + "\nType: checkmated";
                     } else {
-                        this.winInfo = "Winner: " + color + "\nType: stalemated";
+                        this.winInfo = "Draw";
                     }
                 } else if (type.equals("Resign")) {
                     if (player.equals(playerWhite)) {
