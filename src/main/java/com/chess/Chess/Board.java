@@ -317,7 +317,7 @@ public class Board {
     }
 
     public String SetGameEnded(String type, String player) {
-        if(player.equals(playerWhite) || player.equals(playerBlack)) {
+        if((player.equals(playerWhite) || player.equals(playerBlack)) && playerWhite != null && playerBlack != null) {
             if (type.equals("Time")) {
                 if (player.equals(playerWhite)) {
                     this.winInfo = "Winner: Black\nType: time is over";
