@@ -69,12 +69,15 @@ public class BoardTest {
     @Test
     public void check_notating_promotion(){
         position[6][1] = new Pawn(6,1,true,false);
+        position[1][6] = new Pawn(1,6,false,false);
+        position[0][6] = null;
         Assertions.assertTrue(position[6][1].is_white());
-        Figure figure = position[7][2];
         Assertions.assertTrue(board.Move("player1", 6, 1, 7, 0));
-        board.notate_promotion(6, 1, 7, 0, "Rook", figure);
+        board.notate_promotion(6, 1, 7, 0, "Rook", false);
         Assertions.assertEquals(board.getNotation().size(), 1);
         Assertions.assertEquals((board.getNotation()).get(0), "g7xh8R");
+        board.notate_promotion(1, 6, 0, 6, "Knight", true);
+        Assertions.assertEquals((board.getNotation()).get(1), "b2-b1N");
     }
 
     @Test
@@ -126,6 +129,13 @@ public class BoardTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void check_getting_players(){
+        String[] players = board.getPlayers();
+        Assertions.assertEquals(players[0], "player1");
+        Assertions.assertEquals(players[1], "player2");
     }
 
     @Test
