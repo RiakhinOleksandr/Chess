@@ -19,6 +19,7 @@ public class BoardTest {
     void setUp() {
         board = new Board();
         position = board.getFiguresOnBoard();
+        board.colour = 0;
         board.setPlayer("player1");
         board.setPlayer("player2");
     }

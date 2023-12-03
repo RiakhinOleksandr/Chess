@@ -18,6 +18,7 @@ public class BoardContollerTest {
         messagePlayer2.setSender("player2");
 
         BoardContoller boardContoller = new BoardContoller(null);
+        boardContoller.board.colour = 0;
 
         UserMessage resultPlayer1 = boardContoller.register(messagePlayer1);
         assertArrayEquals(new String[]{"player1", null}, resultPlayer1.getPlayers());
@@ -42,6 +43,7 @@ public class BoardContollerTest {
         messagePlayer2.setSender("player2");
 
         BoardContoller boardContoller = new BoardContoller(null);
+        boardContoller.board.colour = 0;
 
         boardContoller.register(messagePlayer1);
         boardContoller.register(messagePlayer2);
@@ -55,6 +57,7 @@ public class BoardContollerTest {
         UserMessage messagePlayer1 = new UserMessage();
         messagePlayer1.setSender("player1");
         BoardContoller boardContoller = new BoardContoller(null);
+        boardContoller.board.colour = 0;
         //Get possible moves
         boardContoller.register(messagePlayer1);
         messagePlayer1.setContent("1_7");
@@ -86,6 +89,7 @@ public class BoardContollerTest {
     @Test
     public void CheckmatedTest() {
         BoardContoller boardContoller = new BoardContoller(null);
+        boardContoller.board.colour = 0;
 
         UserMessage messagePlayer1 = new UserMessage();
         messagePlayer1.setSender("player1");
