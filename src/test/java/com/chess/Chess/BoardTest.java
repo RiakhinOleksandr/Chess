@@ -146,7 +146,7 @@ public class BoardTest {
 
     @Test
     void setGameEndedDrawTest() {
-        Assertions.assertEquals("Opponent offers a draw", board.SetGameEnded("Draw", "player1"));
+        Assertions.assertEquals("player1 offers a draw", board.SetGameEnded("Draw", "player1"));
         Assertions.assertEquals("Draw", board.SetGameEnded("Draw", "player2"));
     }
 }

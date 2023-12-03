@@ -205,7 +205,7 @@ public class Board {
                     clockBlack.start();
                     clockWhite.stop();
                 }
-
+                votedForDraw.clear();
                 return true;
             } catch (Exception e) {
                 // Block of code to handle errors
@@ -302,51 +302,53 @@ public class Board {
     }
 
     public String SetGameEnded(String type, String player) {
-        if (type.equals("Time")) {
-            if (player.equals(playerWhite)) {
-                this.winInfo = "Winner: Black Type: time is over";
-            } else {
-                this.winInfo = "Winner: White Type: time is over";
-            }
-            saveGameToFile("game.txt");
-            this.gameEnded = true;
+        if(player.equals(playerWhite) || player.equals(playerBlack)) {
+            if (type.equals("Time")) {
+                if (player.equals(playerWhite)) {
+                    this.winInfo = "Winner: Black\nType: time is over";
+                } else {
+                    this.winInfo = "Winner: White\nType: time is over";
+                }
+                saveGameToFile("game.txt");
+                this.gameEnded = true;
 
-            return this.winInfo;
-        } else if (type.equals("Draw")) {
-            if (votedForDraw.toArray().length == 0) {
-                votedForDraw.add(player);
-                return "Opponent offers a draw";
-            } else if (votedForDraw.toArray().length == 1 && !votedForDraw.get(0).equals(player)) {
-                votedForDraw.add(player);
+                return this.winInfo;
+            } else if (type.equals("Draw")) {
+                if (votedForDraw.toArray().length == 0) {
+                    votedForDraw.add(player);
+                    return player + " offers a draw";
+                } else if (votedForDraw.toArray().length == 1 && !votedForDraw.get(0).equals(player)) {
+                    votedForDraw.add(player);
+                    this.gameEnded = true;
+                    this.clockWhite.stop();
+                    this.clockBlack.stop();
+                    this.winInfo = "Draw";
+                    saveGameToFile("game.txt");
+                    return "Draw";
+                }
+            } else {
                 this.gameEnded = true;
                 this.clockWhite.stop();
                 this.clockBlack.stop();
-                this.winInfo = "Draw";
+                String color = "White";
+                if (type.equals("NoAnyMovePossible")) {
+                    if (this.playerWhiteTurn) {
+                        color = "Black";
+                    }
+                    if (this.isKingInCheck(this.playerWhiteTurn)) {
+                        this.winInfo = "Winner: " + color + "\nType: checkmated";
+                    } else {
+                        this.winInfo = "Winner: " + color + "\nType: stalemated";
+                    }
+                } else if (type.equals("Resign")) {
+                    if (player.equals(playerWhite)) {
+                        color = "Black";
+                    }
+                    this.winInfo = "Winner: " + color + "\nType: Resign";
+                }
                 saveGameToFile("game.txt");
-                return "Draw";
+                return winInfo;
             }
-        } else {
-            this.gameEnded = true;
-            this.clockWhite.stop();
-            this.clockBlack.stop();
-            String color = "White";
-            if (type.equals("NoAnyMovePossible")) {
-                if (this.playerWhiteTurn) {
-                    color = "Black";
-                }
-                if (this.isKingInCheck(this.playerWhiteTurn)) {
-                    this.winInfo = "Winner: " + color + " Type: checkmated";
-                } else {
-                    this.winInfo = "Winner: " + color + " Type: stalemated";
-                }
-            } else if (type.equals("Resign")) {
-                if (player.equals(playerWhite)) {
-                    color = "Black";
-                }
-                this.winInfo = "Winner: " + color + " Type: Resign";
-            }
-            saveGameToFile("game.txt");
-            return winInfo;
         }
         return "None";
     }

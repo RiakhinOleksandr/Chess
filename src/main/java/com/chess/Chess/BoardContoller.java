@@ -9,9 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
-import java.security.Principal;
-import java.util.Arrays;
-
 @Controller
 @EnableScheduling
 public class BoardContoller {
@@ -34,7 +31,7 @@ public class BoardContoller {
 
     @MessageMapping("/game.getMoves")
     @SendToUser("/topic/private")
-    public UserMessage sendPosMoves(@Payload UserMessage message, final Principal principal) {
+    public UserMessage SendPosMoves(@Payload UserMessage message) {
         String[] pos = message.getContent().split("_");
         int[] result = { Integer.parseInt(pos[0]), Integer.parseInt(pos[1]) };
         if (!board.getGameEnded()) {
@@ -54,25 +51,32 @@ public class BoardContoller {
         String[] pos = message.getContent().split("_");
         int[] result = { Integer.parseInt(pos[0]), Integer.parseInt(pos[1]), Integer.parseInt(pos[2]),
                 Integer.parseInt(pos[3]) };
+
         Figure figure = board.getFigure(result[2], result[3]);
         if (!board.getGameEnded() && board.getPlayers()[0] != null && board.getPlayers()[1] != null
                 && board.Move(message.getSender(), result[0], result[1], result[2], result[3])) {
             if ((result[2] == 0 || result[2] == 7) && board.getFigure(result[2], result[3]).get_name().equals("Pawn")) {
-                boolean isEmpty;
-                if(figure == null){
-                    isEmpty = true;
-                } else{
-                    isEmpty = false;
+               if(pos.length == 5) {
+                  boolean isEmpty;
+                  if(figure == null){
+                      isEmpty = true;
+                  } else{
+                      isEmpty = false;
+                  }
+                  Pawn pawn = (Pawn) board.getFigure(result[2], result[3]);
+                  pawn.promote(board.getFiguresOnBoard(), result[2], result[3], pos[4]);
+                  board.notate_promotion(result[0], result[1], result[2], result[3], pos[4], isEmpty);
+                } else {
+                    message.setType("None");
+                    return message;
                 }
-                Pawn pawn = (Pawn) board.getFigure(result[2], result[3]);
-                pawn.promote(board.getFiguresOnBoard(), result[2], result[3], pos[4]);
-                board.notate_promotion(result[0], result[1], result[2], result[3], pos[4], isEmpty);
             }
             message.setBoard(board.getFiguresOnBoard());
             message.setNotation(board.getNotation());
             if (!board.isAnyMovePossible(board.playerWhiteTurn)) {
                 board.saveGameToFile("game.txt");
                 message.setType(board.SetGameEnded("NoAnyMovePossible", message.getSender()));
+                board = new Board();
             } else {
                 message.setType("BoardLoad");
             }
@@ -108,7 +112,7 @@ public class BoardContoller {
     }
 
     @Scheduled(fixedRate = 1000)
-    public void sendPeriodicMessages() {
+    public void SendPeriodicMessages() {
         UserMessage message = new UserMessage();
         message.setType("Timer");
 
@@ -128,8 +132,7 @@ public class BoardContoller {
             }
         }
 
-        message.setContent(
-                String.valueOf(board.getTimesLeft()[0] - 1) + " " + String.valueOf(board.getTimesLeft()[1] - 1));
+        message.setContent(String.valueOf(board.getTimesLeft()[0] - 1) + " " + String.valueOf(board.getTimesLeft()[1] - 1));
         messagingTemplate.convertAndSend("/topic/public", message);
     }
 }

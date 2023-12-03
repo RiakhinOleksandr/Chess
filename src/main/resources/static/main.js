@@ -11,6 +11,7 @@ var lastPressedFigureId = null;
 const transformBoard = document.getElementById("PawnTransform");
 
 var isWhite = null;
+var spectator = true;
 
 function connect() {
     username = document.querySelector('#name').value.trim();
@@ -97,7 +98,11 @@ function Move(event) {
 }
 
 function GetMoves(event) {
-    if(!gameEnded && document.getElementById(event).getElementsByTagName("img")[0].src.includes(isWhite)) {
+    const figures = transformBoard.querySelectorAll('.Figure ');
+    figures.forEach(figure => {
+        figure.remove();
+    });
+    if(!gameEnded && document.getElementById(event).getElementsByTagName("img")[0].src.includes(isWhite)&& !spectator) {
         if (lastPressedFigureId !== event) {
             if (stompClient) {
                 var gameMessage = {
@@ -141,6 +146,7 @@ function displayPossibleMoves(){
 function boardDraw(array){
     deleteFigures();
     deleteNotations();
+    document.getElementById("WinInfo").innerHTML = "";
     for(let i = 0; i < array.board.length; i++){
         for(let j = 0; j < array.board.length; j++){
             if(array.board[i][j] != null) {
@@ -184,12 +190,16 @@ function boardDraw(array){
         document.getElementById("WhiteName").innerHTML =  array.players[0];
         document.getElementById("BlackName").innerHTML =  array.players[1];
     }else {
-        if(!array.type.includes("Opponent offers")) {
+        if(!array.type.includes("offers a draw")) {
+            document.getElementById("WhiteTimer").style.opacity = "1";
+            document.getElementById("BlackTimer").style.opacity = "1";
             gameEnded = true;
             document.getElementById("FindNewGame").style.display = "block";
             socket.close();
         }
-        document.getElementById("WinInfo").innerHTML = array.type;
+        if(!array.type.includes(username)) {
+            document.getElementById("WinInfo").innerHTML = array.type;
+        }
     }
     if(lastPressedFigureId) {
         let temp = lastPressedFigureId;
@@ -235,6 +245,9 @@ function onMessageReceived(data) {
     }
 
     if(array.type === "BoardLoad" || array.type.includes("Winner") || array.type.toLowerCase().includes("draw")){
+        if(array.players[0] === username || array.players[1] === username ){
+            spectator = false;
+        }
         isWhite = username === array.players[0];
         boardDraw(array);
     }
