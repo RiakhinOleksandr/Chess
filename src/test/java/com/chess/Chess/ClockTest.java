@@ -18,4 +18,16 @@ public class ClockTest {
     }
   }
 
+  @Test
+  public void stopCheck() {
+    try {
+      Clock c = new Clock(0);
+      c.start();
+      Thread.sleep(2000);
+      Assertions.assertEquals(0, c.getTimeLeft());
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+  }
+
 }
