@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
 
 public class Board {
     Figure[][] position = new Figure[8][8];
@@ -23,6 +24,7 @@ public class Board {
     private Clock clockWhite = null;
     private Clock clockBlack = null;
     private static int time = 601;
+    public int colour;
 
     public Board() {
         this.position[0][0] = new Rook(0, 0, true, true);
@@ -48,6 +50,9 @@ public class Board {
         for (int i = 0; i < 8; i++) {
             this.position[6][i] = new Pawn(6, i, false, true);
         }
+
+        Random rand = new Random();
+        this.colour = rand.nextInt(2);
     }
 
     public Figure getFigure(int row, int column) {
@@ -284,12 +289,22 @@ public class Board {
     }
 
     public void setPlayer(String player) {
-        if (this.playerWhite == null) {
-            this.playerWhite = player;
-            this.clockWhite = new Clock(time);
-        } else if (this.playerBlack == null && !Objects.equals(player, this.playerWhite)) {
-            this.playerBlack = player;
-            this.clockBlack = new Clock(time);
+        if(this.colour == 0){
+            if (this.playerWhite == null) {
+                this.playerWhite = player;
+                this.clockWhite = new Clock(time);
+            } else if (this.playerBlack == null && !Objects.equals(player, this.playerWhite)) {
+                this.playerBlack = player;
+                this.clockBlack = new Clock(time);
+            }
+        } else{
+            if (this.playerBlack == null) {
+                this.playerBlack = player;
+                this.clockBlack = new Clock(time);
+            } else if (this.playerWhite == null && !Objects.equals(player, this.playerBlack)) {
+                this.playerWhite = player;
+                this.clockWhite = new Clock(time);
+            }
         }
     }
 
