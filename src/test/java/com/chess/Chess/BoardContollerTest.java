@@ -48,8 +48,12 @@ public class BoardContollerTest {
         boardContoller.register(messagePlayer1);
         boardContoller.register(messagePlayer2);
 
-        messagePlayer1.setContent("Draw");
+        messagePlayer1.setContent("Test");
         UserMessage resultPlayer1 = boardContoller.EndGame(messagePlayer1);
+        assertEquals(resultPlayer1.getType(), "None");
+
+        messagePlayer1.setContent("Draw");
+        resultPlayer1 = boardContoller.EndGame(messagePlayer1);
         assertEquals(resultPlayer1.getType(), "player1 offers a draw");
     }
     @Test

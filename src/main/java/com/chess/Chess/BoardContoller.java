@@ -21,10 +21,9 @@ public class BoardContoller {
         message.setBoard(board.getFiguresOnBoard());
         message.setPlayers(board.getPlayers());
         message.setNotation(board.getNotation());
+        message.setType("None");
         if (!board.getGameEnded()) {
             message.setType("BoardLoad");
-        } else {
-            message.setType(board.getWinInfo());
         }
         return message;
     }
@@ -34,12 +33,11 @@ public class BoardContoller {
     public UserMessage SendPosMoves(@Payload UserMessage message) {
         String[] pos = message.getContent().split("_");
         int[] result = { Integer.parseInt(pos[0]), Integer.parseInt(pos[1]) };
+        message.setType("None");
         if (!board.getGameEnded()) {
             message.setType("PosibleMoves");
             message.setPosibleMoves(
                     board.getFigure(result[0], result[1]).get_possible_moves(board.getFiguresOnBoard()));
-        } else {
-            message.setType("None");
         }
         return message;
     }
@@ -53,6 +51,7 @@ public class BoardContoller {
                 Integer.parseInt(pos[3]) };
 
         Figure figure = board.getFigure(result[2], result[3]);
+        message.setType("None");
         if (!board.getGameEnded() && board.getPlayers()[0] != null && board.getPlayers()[1] != null
                 && board.Move(message.getSender(), result[0], result[1], result[2], result[3])) {
             if ((result[2] == 0 || result[2] == 7) && board.getFigure(result[2], result[3]).get_name().equals("Pawn")) {
@@ -67,7 +66,6 @@ public class BoardContoller {
                   pawn.promote(board.getFiguresOnBoard(), result[2], result[3], pos[4]);
                   board.notate_promotion(result[0], result[1], result[2], result[3], pos[4], isEmpty);
                 } else {
-                    message.setType("None");
                     return message;
                 }
             }
@@ -80,8 +78,6 @@ public class BoardContoller {
             } else {
                 message.setType("BoardLoad");
             }
-        } else {
-            message.setType("None");
         }
         return message;
     }
@@ -89,6 +85,7 @@ public class BoardContoller {
     @MessageMapping("/game.EndGame")
     @SendTo("/topic/public")
     public UserMessage EndGame(@Payload UserMessage message) {
+        message.setType("None");
         if (!board.getGameEnded()) {
             if (message.getContent().equals("Resign")) {
                 message.setType(board.SetGameEnded("Resign", message.getSender()));
