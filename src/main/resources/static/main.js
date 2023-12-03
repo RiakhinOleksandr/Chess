@@ -11,6 +11,7 @@ var lastPressedFigureId = null;
 const transformBoard = document.getElementById("PawnTransform");
 
 var isWhite = null;
+var spectator = true;
 
 function connect() {
     username = document.querySelector('#name').value.trim();
@@ -101,7 +102,7 @@ function GetMoves(event) {
     figures.forEach(figure => {
         figure.remove();
     });
-    if(!gameEnded && document.getElementById(event).getElementsByTagName("img")[0].src.includes(isWhite)) {
+    if(!gameEnded && document.getElementById(event).getElementsByTagName("img")[0].src.includes(isWhite)&& !spectator) {
         if (lastPressedFigureId !== event) {
             if (stompClient) {
                 var gameMessage = {
@@ -244,6 +245,9 @@ function onMessageReceived(data) {
     }
 
     if(array.type === "BoardLoad" || array.type.includes("Winner") || array.type.toLowerCase().includes("draw")){
+        if(array.players[0] === username || array.players[1] === username ){
+            spectator = false;
+        }
         isWhite = username === array.players[0];
         boardDraw(array);
     }
