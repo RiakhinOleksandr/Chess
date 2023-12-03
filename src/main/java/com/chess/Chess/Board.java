@@ -16,7 +16,7 @@ public class Board {
     private boolean gameEnded = false;
     private String playerWhite = null;
     private String playerBlack = null;
-    private String winInfo = "";
+    private String winInfo = "Null";
     private final ArrayList<String> votedForDraw = new ArrayList<>();
     private final ArrayList<String> notation = new ArrayList<>();
     boolean playerWhiteTurn = true;

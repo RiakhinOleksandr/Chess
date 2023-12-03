@@ -1,0 +1,5 @@
+White player: player1
+Black player: player2
+----------------------
+----------------------
+Draw
