@@ -4,12 +4,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
-//import java.util.Arrays;
 
 public class BoardTest {
     Board board;
@@ -34,20 +33,6 @@ public class BoardTest {
             Assertions.assertTrue(piece.is_white());
         }
         Assertions.assertEquals(16, whitePieces.length);
-        // uncomment to see how it works
-
-        // for (Figure figure : whitePieces) {
-        // System.out.println("-------------------");
-        // System.out.println(figure.get_name());
-        // System.out.println(figure.is_white());
-        // if (figure.get_possible_moves(position).isEmpty()) {
-        // System.out.println("No possible moves");
-        // }
-        // for (int[] arr : figure.get_possible_moves(position)) {
-        // System.out.println(Arrays.toString(arr));
-        // }
-        // System.out.println("-------------------");
-        // }
     }
 
     @Test
@@ -149,5 +134,83 @@ public class BoardTest {
     void setGameEndedDrawTest() {
         Assertions.assertEquals("player1 offers a draw", board.SetGameEnded("Draw", "player1"));
         Assertions.assertEquals("Draw", board.SetGameEnded("Draw", "player2"));
+    }
+
+    @Test
+    void setPlayersRandomTest() {
+        board = new Board();
+        position = board.getFiguresOnBoard();
+        board.colour = 1;
+        board.setPlayer("firstShouldBeBlack");
+        board.setPlayer("secondShouldBeWhite");
+        Assertions.assertEquals("firstShouldBeBlack", board.getPlayers()[1]);
+        Assertions.assertEquals("secondShouldBeWhite", board.getPlayers()[0]);
+    }
+
+    @Test
+    void setPlayersInvalidNameTest() {
+        board = new Board();
+        position = board.getFiguresOnBoard();
+        board.colour = 0;
+        board.setPlayer("playerWhite");
+        board.setPlayer("playerWhite");
+        Assertions.assertEquals("playerWhite", board.getPlayers()[0]);
+        Assertions.assertNull(board.getPlayers()[1]);
+
+        board = new Board();
+        position = board.getFiguresOnBoard();
+        board.colour = 1;
+        board.setPlayer("playerBlack");
+        board.setPlayer("playerBlack");
+        Assertions.assertEquals("playerBlack", board.getPlayers()[1]);
+        Assertions.assertNull(board.getPlayers()[0]);
+    }
+
+    @Test
+    void setPlayersOverrideNamesTest() {
+        board.setPlayer("playerWhite");
+        board.setPlayer("playerBlack");
+        Assertions.assertEquals("player1", board.getPlayers()[0]);
+        Assertions.assertEquals("player2", board.getPlayers()[1]);
+
+        board = new Board();
+        position = board.getFiguresOnBoard();
+        board.colour = 1;
+        board.setPlayer("playerBlack");
+        board.setPlayer("playerWhite");
+        board.setPlayer("someOtherName");
+        Assertions.assertEquals("playerWhite", board.getPlayers()[0]);
+        Assertions.assertEquals("playerBlack", board.getPlayers()[1]);
+    }
+
+    @Test
+    void setGameEndedWhiteTimeoutTest() {
+        board.SetGameEnded("Time", "player1");
+        Assertions.assertEquals("Winner: Black\nType: time is over", board.getWinInfo());
+    }
+
+    @Test
+    void setGameEndedBlackTimeoutTest() {
+        board.SetGameEnded("Time", "player2");
+        Assertions.assertEquals("Winner: White\nType: time is over", board.getWinInfo());
+    }
+
+    @Test
+    void setGameEndedIncorrectNameTest() {
+        board.SetGameEnded("Time", "player3");
+        Assertions.assertEquals("None", board.SetGameEnded("Time", "player3"));
+        Assertions.assertEquals("", board.getWinInfo());
+    }
+
+    @Test
+    void setGameEndedResignWhiteTest() {
+        board.SetGameEnded("Resign", "player1");
+        Assertions.assertEquals("Winner: Black\nType: Resign", board.getWinInfo());
+    }
+
+    @Test
+    void setGameEndedResignBlackTest() {
+        board.SetGameEnded("Resign", "player2");
+        Assertions.assertEquals("Winner: White\nType: Resign", board.getWinInfo());
     }
 }
